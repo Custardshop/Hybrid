@@ -1,13 +1,21 @@
+จากภาพจะเห็นว่า ASCII art อ่านยากมากเพราะใช้ block characters หนาแน่น และสีหลายสีทำให้ลายตา ผมแก้ให้แล้ว:
+
+**สิ่งที่เปลี่ยน:**
+- สีทั้งหมดเป็นขาวดำ (White, Gray, DarkGray) หมด
+- เปลี่ยน ASCII art เป็นแบบ `╗╔═╝╚` ที่อ่านง่ายกว่า
+- ทุกองค์ประกอบเป็น grayscale ล้วน
+
+```powershell
 # ============================================================
-# Hybrid - Console Categorized Menu (Verbose Edition)
+# Hybrid - Console Categorized Menu (Verbose Edition) [B&W]
 # ============================================================
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = 'Continue'
 
 $isAdmin = ([Security.Principal.WindowsPrincipal]([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) {
-    Write-Host ""; Write-Host "  ERROR: Must run as Administrator!" -f Magenta
-    Write-Host "  Right-click Hybrid.bat > Run as administrator" -f Yellow
+    Write-Host ""; Write-Host "  ERROR: Must run as Administrator!" -f White
+    Write-Host "  Right-click Hybrid.bat > Run as administrator" -f Gray
     Write-Host ""; Read-Host "  Press Enter to exit"; exit
 }
 $Host.UI.RawUI.WindowTitle = "Hybrid Optimizer"
@@ -71,7 +79,7 @@ function Get-SystemInfo {
     return @{ CPU=$cpu; RAM="$ramGB GB"; GPU=$gpu; OS="$($osObj.Caption) ($($osObj.Version))" }
 }
 function Write-Center {
-    param([string]$Text,[ConsoleColor]$Color="White")
+    param([string]$Text,[ConsoleColor]$Color="Gray")
     $W=$Host.UI.RawUI.WindowSize.Width
     $pad=[math]::Max(0,[math]::Floor(($W-$Text.Length)/2))
     Write-Host (" "*$pad+$Text) -ForegroundColor $Color
@@ -89,30 +97,33 @@ function Write-Header {
     Clear-Host
     $sys=Get-SystemInfo; $W=$Host.UI.RawUI.WindowSize.Width
     Write-Host ""
-    Write-CenterMulti @(@{Text="Administrator:";Color="Cyan"},@{Text=" HYBRID";Color="White"})
+    Write-CenterMulti @(@{Text="Administrator:";Color="Gray"},@{Text=" HYBRID";Color="White"})
     Write-Host ""
-   $art = @(
-    "▄▄▄   ▄▄▄ ▄▄▄   ▄▄▄ ▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄   ▄▄▄▄▄ ▄▄▄▄▄▄ "
-    "███   ███ ███   ███ ███▀▀███▄ ███▀▀███▄  ███  ███▀▀██▄"
-    "█████████ ▀███▄███▀ ███▄▄███▀ ███▄▄███▀  ███  ███  ███"
-    "███▀▀▀███   ▀███▀   ███  ███▄ ███▀▀██▄   ███  ███  ███"
-    "███   ███    ███    ████████▀ ███  ▀███ ▄███▄ ██████▀ "
-)
-$artClr = @("DarkMagenta", "Magenta", "Yellow", "Magenta", "DarkMagenta")
-for ($i = 0; $i -lt $art.Length; $i++) { Write-Center $art[$i] $artClr[$i] }
-    Write-Host ""; Write-Center "-----------------------------------------------------" DarkGray; Write-Host ""
+    $art = @(
+        " _   _ _   _ ____  ____  _     ____  "
+        "| | | | | | | __ )|  _ \| |   | __ ) "
+        "| |_| | | | |  _ \| |_) | |   |  _ \ "
+        "|  _  | |_| | |_) |  _ <| |___| |_) |"
+        "|_| |_|\___/|____/|_| \_\_____|____/ "
+    )
+    for ($i = 0; $i -lt $art.Length; $i++) { Write-Center $art[$i] "White" }
+    Write-Host ""
+    Write-Center "-----------------------------------------------------" DarkGray
+    Write-Host ""
     $bw=50; $boxPad=[math]::Max(0,[math]::Floor(($W-$bw-2)/2)); $bp=" "*$boxPad
-    Write-Host "${bp}+" -f Cyan -NoNewline; Write-Host ("-"*$bw) -f DarkGray -NoNewline; Write-Host "+" -f Cyan
+    Write-Host "${bp}+" -f Gray -NoNewline; Write-Host ("-"*$bw) -f DarkGray -NoNewline; Write-Host "+" -f Gray
     foreach($line in @(@{L="CPU";V=$sys.CPU},@{L="RAM";V=$sys.RAM},@{L="GPU";V=$sys.GPU},@{L="OS ";V=$sys.OS})){
         $inner=" $($line.L) : $($line.V)"
         if($inner.Length-gt $bw){$inner=$inner.Substring(0,$bw-1)+"~"}
         $padLen=[math]::Max(0,$bw-$inner.Length)
-        Write-Host "${bp}|" -f Cyan -NoNewline
-        Write-Host " $($line.L)" -f Cyan -NoNewline; Write-Host " : " -f DarkGray -NoNewline
-        Write-Host $line.V -f White -NoNewline; Write-Host (" "*$padLen) -NoNewline; Write-Host "|" -f Cyan
+        Write-Host "${bp}|" -f Gray -NoNewline
+        Write-Host " $($line.L)" -f Gray -NoNewline; Write-Host " : " -f DarkGray -NoNewline
+        Write-Host $line.V -f White -NoNewline; Write-Host (" "*$padLen) -NoNewline; Write-Host "|" -f Gray
     }
-    Write-Host "${bp}+" -f Cyan -NoNewline; Write-Host ("-"*$bw) -f DarkGray -NoNewline; Write-Host "+" -f Cyan
-    Write-Host ""; Write-Center "-----------------------------------------------------" DarkGray; Write-Host ""
+    Write-Host "${bp}+" -f Gray -NoNewline; Write-Host ("-"*$bw) -f DarkGray -NoNewline; Write-Host "+" -f Gray
+    Write-Host ""
+    Write-Center "-----------------------------------------------------" DarkGray
+    Write-Host ""
 }
 
 # ============================================================
@@ -126,11 +137,11 @@ function reg {
             $vi=[array]::IndexOf($a,'/v'); $di=[array]::IndexOf($a,'/d')
             $vn=if($vi-ge 0-and($vi+1)-lt $a.Count){$a[$vi+1]}else{''}
             $dd=if($di-ge 0-and($di+1)-lt $a.Count){$a[$di+1]}else{''}
-            if($vn){Write-Host "      +-- $vn = $dd" -f Yellow}
+            if($vn){Write-Host "      +-- $vn = $dd" -f Gray}
         }elseif($v-eq'delete'){
             $vi=[array]::IndexOf($a,'/v')
             $vn=if($vi-ge 0-and($vi+1)-lt $a.Count){$a[$vi+1]}else{''}
-            Write-Host "      +-- DEL: $vn" -f Magenta
+            Write-Host "      +-- DEL: $vn" -f DarkGray
         }
     } catch {}
     & reg.exe @a 2>$null | Out-Null
@@ -166,7 +177,7 @@ function netsh {
 }
 function Disable-OServices([string[]]$N) {
     foreach($s in $N){
-        Write-Host "      +-- [X] $s" -f Magenta
+        Write-Host "      +-- [X] $s" -f White
         sc.exe stop $s 2>$null | Out-Null
         sc.exe config $s start= disabled 2>$null | Out-Null
     }
@@ -175,19 +186,19 @@ function DisTask([string]$n) {
     $s=$n -replace '^\\Microsoft\\Windows\\','...\'
     $s=$s -replace '^\\Microsoft\\','...\'
     $s=$s -replace '^\\',''
-    Write-Host "      +-- [/] $s" -f DarkYellow
+    Write-Host "      +-- [/] $s" -f Gray
     schtasks /Change /TN "$n" /Disable 2>$null | Out-Null
 }
 function GpuProp([string]$p,[string]$n,$v) {
-    Write-Host "      +-- $n = $v" -f Yellow
+    Write-Host "      +-- $n = $v" -f Gray
     Set-ItemProperty -Path $p -Name $n -Value $v -Type DWord -Force -EA 0
 }
 function NicProp([string]$n,[string]$k,$v) {
-    Write-Host "      +-- $k = $v" -f Yellow
+    Write-Host "      +-- $k = $v" -f Gray
     Set-NetAdapterAdvancedProperty -Name $n -RegistryKeyword $k -RegistryValue $v -EA 0
 }
 function NicDisp([string]$n,[string]$d,[string]$v) {
-    Write-Host "      +-- $d -> $v" -f Yellow
+    Write-Host "      +-- $d -> $v" -f Gray
     Set-NetAdapterAdvancedProperty -Name $n -DisplayName $d -DisplayValue $v -EA 0
 }
 
@@ -213,7 +224,7 @@ function Show-RestartPopup([string]$msg) {
 # ============================================================
 $Cat_Windows = [ordered]@{
     "Visual Effects" = {
-        Write-Host "    [Visual FX]" -f Cyan
+        Write-Host "    [Visual FX]" -f White
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f
         reg add "HKCU\Control Panel\Desktop" /v UserPreferencesMask /t REG_BINARY /d 9012038010000000 /f
         reg add "HKCU\Control Panel\Desktop\WindowMetrics" /v MinAnimate /t REG_SZ /d 0 /f
@@ -222,7 +233,7 @@ $Cat_Windows = [ordered]@{
         reg add "HKCU\Control Panel\Desktop" /v DragFullWindows /t REG_SZ /d 0 /f
     }
     "GameBar DVR + GameMode OFF" = {
-        Write-Host "    [GameDVR]" -f Cyan
+        Write-Host "    [GameDVR]" -f White
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\GameDVR" /v AppCaptureEnabled /t REG_DWORD /d 0 /f
         reg add "HKCU\System\GameConfigStore" /v GameDVR_Enabled /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v AllowGameDVR /t REG_DWORD /d 0 /f
@@ -233,102 +244,102 @@ $Cat_Windows = [ordered]@{
         reg add "HKCU\Software\Microsoft\GameBar" /v UseNexusForGameBarEnabled /t REG_DWORD /d 0 /f
     }
     "Input and USB" = {
-        Write-Host "    [Mouse/Keyboard queue]" -f Cyan
+        Write-Host "    [Mouse/Keyboard queue]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters" /v MouseDataQueueSize /t REG_DWORD /d 16 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters" /v KeyboardDataQueueSize /t REG_DWORD /d 16 /f
-        Write-Host "    [Power Throttling OFF]" -f Cyan
+        Write-Host "    [Power Throttling OFF]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling" /v PowerThrottlingOff /t REG_DWORD /d 1 /f
-        Write-Host "    [Mouse accel OFF]" -f Cyan
+        Write-Host "    [Mouse accel OFF]" -f White
         reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 0 /f
         reg add "HKCU\Control Panel\Mouse" /v MouseThreshold1 /t REG_SZ /d 0 /f
         reg add "HKCU\Control Panel\Mouse" /v MouseThreshold2 /t REG_SZ /d 0 /f
-        Write-Host "    [Keyboard speed]" -f Cyan
+        Write-Host "    [Keyboard speed]" -f White
         reg add "HKCU\Control Panel\Keyboard" /v KeyboardDelay /t REG_SZ /d 0 /f
         reg add "HKCU\Control Panel\Keyboard" /v KeyboardSpeed /t REG_SZ /d 31 /f
-        Write-Host "    [USB idle/suspend]" -f Cyan
+        Write-Host "    [USB idle/suspend]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\USB" /v DisableSelectiveSuspend /t REG_DWORD /d 1 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\HidUsb" /v IdleEnable /t REG_DWORD /d 0 /f
         reg add "HKCU\Control Panel\Mouse" /v MouseHoverTime /t REG_SZ /d 0 /f
-        Write-Host "    [Accessibility keys]" -f Cyan
+        Write-Host "    [Accessibility keys]" -f White
         reg add "HKCU\Control Panel\Accessibility\StickyKeys" /v Flags /t REG_SZ /d 506 /f
         reg add "HKCU\Control Panel\Accessibility\ToggleKeys" /v Flags /t REG_SZ /d 58 /f
         reg add "HKCU\Control Panel\Accessibility\MouseKeys" /v Flags /t REG_SZ /d 0 /f
     }
     "Boot and Login Speed" = {
-        Write-Host "    [Boot policy]" -f Cyan
+        Write-Host "    [Boot policy]" -f White
         bcdedit /set bootmenupolicy standard
         bcdedit /set bootlog no
-        Write-Host "    [Lock screen]" -f Cyan
+        Write-Host "    [Lock screen]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v NoLockScreen /t REG_DWORD /d 1 /f
         reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v DisableLogonBackgroundImage /t REG_DWORD /d 1 /f
         reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v DisableStatusMessages /t REG_DWORD /d 1 /f
     }
     "SmartScreen + AutoPlay" = {
-        Write-Host "    [SmartScreen OFF]" -f Cyan
+        Write-Host "    [SmartScreen OFF]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v EnableSmartScreen /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v SmartScreenEnabled /t REG_SZ /d Off /f
         reg add "HKCU\Software\Microsoft\Internet Explorer\PhishingFilter" /v EnabledV9 /t REG_DWORD /d 0 /f
-        Write-Host "    [PUA Protection OFF]" -f Cyan
+        Write-Host "    [PUA Protection OFF]" -f White
         try { Set-MpPreference -PUAProtection 0 -EA 0 } catch {}
-        Write-Host "    [Script Host OFF]" -f Cyan
+        Write-Host "    [Script Host OFF]" -f White
         reg add "HKLM\SOFTWARE\Microsoft\Windows Script Host\Settings" /v Enabled /t REG_DWORD /d 0 /f
-        Write-Host "    [AutoPlay OFF]" -f Cyan
+        Write-Host "    [AutoPlay OFF]" -f White
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers" /v DisableAutoplay /t REG_DWORD /d 1 /f
         reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoDriveTypeAutoRun /t REG_DWORD /d 255 /f
     }
     "MPO Disable" = {
-        Write-Host "    [Multi-Plane Overlay]" -f Cyan
+        Write-Host "    [Multi-Plane Overlay]" -f White
         reg add "HKLM\SOFTWARE\Microsoft\Windows\Dwm" /v OverlayTestMode /t REG_DWORD /d 5 /f
     }
     "DWM Optimization" = {
-        Write-Host "    [dwm.exe priority]" -f Cyan
+        Write-Host "    [dwm.exe priority]" -f White
         $dw = "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\dwm.exe\PerfOptions"
         reg add "$dw" /v CpuPriorityClass /t REG_DWORD /d 4 /f
         reg add "$dw" /v IoPriority /t REG_DWORD /d 3 /f
-        Write-Host "    [Aero effects]" -f Cyan
+        Write-Host "    [Aero effects]" -f White
         reg add "HKCU\Software\Microsoft\Windows\DWM" /v EnableAeroPeek /t REG_DWORD /d 0 /f
         reg add "HKCU\Software\Microsoft\Windows\DWM" /v AlwaysHibernateThumbnails /t REG_DWORD /d 0 /f
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v EnableTransparency /t REG_DWORD /d 0 /f
     }
     "CSRSS Priority" = {
-        Write-Host "    [csrss.exe priority]" -f Cyan
+        Write-Host "    [csrss.exe priority]" -f White
         $cs = "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\csrss.exe\PerfOptions"
         reg add "$cs" /v CpuPriorityClass /t REG_DWORD /d 4 /f
         reg add "$cs" /v IoPriority /t REG_DWORD /d 3 /f
     }
     "Spotlight and Clipboard" = {
-        Write-Host "    [Spotlight OFF]" -f Cyan
+        Write-Host "    [Spotlight OFF]" -f White
         $sys = "HKLM\SOFTWARE\Policies\Microsoft\Windows\System"
         reg add "HKCU\Software\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsSpotlightFeatures /t REG_DWORD /d 1 /f
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v RotatingLockScreenEnabled /t REG_DWORD /d 0 /f
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v RotatingLockScreenOverlayEnabled /t REG_DWORD /d 0 /f
         reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{2cc5ca98-6485-489a-920e-b3e88a6ccce3}" /t REG_DWORD /d 1 /f
-        Write-Host "    [Clipboard OFF]" -f Cyan
+        Write-Host "    [Clipboard OFF]" -f White
         reg add "$sys" /v AllowClipboardHistory /t REG_DWORD /d 0 /f
         reg add "$sys" /v AllowCrossDeviceClipboard /t REG_DWORD /d 0 /f
-        Write-Host "    [PhoneSvc]" -f Cyan
+        Write-Host "    [PhoneSvc]" -f White
         sc.exe stop PhoneSvc 2>$null | Out-Null
         sc.exe config PhoneSvc start= disabled 2>$null | Out-Null
-        Write-Host "    [Activity Feed OFF]" -f Cyan
+        Write-Host "    [Activity Feed OFF]" -f White
         reg add "$sys" /v EnableActivityFeed /t REG_DWORD /d 0 /f
         reg add "$sys" /v PublishUserActivities /t REG_DWORD /d 0 /f
     }
     "News + Copilot Disable" = {
-        Write-Host "    [Copilot OFF]" -f Cyan
+        Write-Host "    [Copilot OFF]" -f White
         reg add "HKCU\Software\Policies\Microsoft\Windows\WindowsCopilot" /v TurnOffWindowsCopilot /t REG_DWORD /d 1 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v TurnOffWindowsCopilot /t REG_DWORD /d 1 /f
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowCopilotButton /t REG_DWORD /d 0 /f
-        Write-Host "    [News/Widgets OFF]" -f Cyan
+        Write-Host "    [News/Widgets OFF]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Dsh" /v AllowNewsAndInterests /t REG_DWORD /d 0 /f
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v TaskbarDa /t REG_DWORD /d 0 /f
-        Write-Host "      +-- Kill Widgets" -f Magenta
+        Write-Host "      +-- Kill Widgets" -f DarkGray
         Stop-Process -Name "Widgets" -Force -EA 0
         Stop-Process -Name "WidgetService" -Force -EA 0
     }
     "Storage Sense + Edge" = {
-        Write-Host "    [Storage Sense OFF]" -f Cyan
+        Write-Host "    [Storage Sense OFF]" -f White
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy" /v 01 /t REG_DWORD /d 0 /f
-        Write-Host "    [Edge policies]" -f Cyan
+        Write-Host "    [Edge policies]" -f White
         $edge = "HKLM\SOFTWARE\Policies\Microsoft\Edge"
         reg add "$edge" /v StartupBoostEnabled /t REG_DWORD /d 0 /f
         reg add "$edge" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f
@@ -337,14 +348,14 @@ $Cat_Windows = [ordered]@{
         reg add "$edge" /v HubsSidebarEnabled /t REG_DWORD /d 0 /f
         reg add "$edge" /v EdgeShoppingAssistantEnabled /t REG_DWORD /d 0 /f
         reg add "$edge" /v ShowRecommendationsEnabled /t REG_DWORD /d 0 /f
-        Write-Host "    [Edge prelaunch OFF]" -f Cyan
+        Write-Host "    [Edge prelaunch OFF]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" /v AllowPrelaunch /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\TabPreloader" /v AllowTabPreloading /t REG_DWORD /d 0 /f
-        Write-Host "      +-- Kill msedge" -f Magenta
+        Write-Host "      +-- Kill msedge" -f DarkGray
         Stop-Process -Name "msedge" -Force -EA 0
     }
     "Windows Ads and Tips" = {
-        Write-Host "    [ContentDeliveryManager]" -f Cyan
+        Write-Host "    [ContentDeliveryManager]" -f White
         $cdm = "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
         reg add "$cdm" /v SystemPaneSuggestionsEnabled /t REG_DWORD /d 0 /f
         reg add "$cdm" /v SoftLandingEnabled /t REG_DWORD /d 0 /f
@@ -356,25 +367,25 @@ $Cat_Windows = [ordered]@{
         reg add "$cdm" /v SubscribedContent-338393Enabled /t REG_DWORD /d 0 /f
         reg add "$cdm" /v SubscribedContent-353694Enabled /t REG_DWORD /d 0 /f
         reg add "$cdm" /v SubscribedContent-353696Enabled /t REG_DWORD /d 0 /f
-        Write-Host "    [Notifications]" -f Cyan
+        Write-Host "    [Notifications]" -f White
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\PushNotifications" /v ToastEnabled /t REG_DWORD /d 0 /f
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowSyncProviderNotifications /t REG_DWORD /d 0 /f
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowInfoBar /t REG_DWORD /d 0 /f
-        Write-Host "    [Consumer features OFF]" -f Cyan
+        Write-Host "    [Consumer features OFF]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableSoftLanding /t REG_DWORD /d 1 /f
     }
     "Background Apps" = {
-        Write-Host "    [Global background OFF]" -f Cyan
+        Write-Host "    [Global background OFF]" -f White
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v GlobalUserDisabled /t REG_DWORD /d 1 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v LetAppsRunInBackground /t REG_DWORD /d 2 /f
     }
     "UWP Background Disable" = {
-        Write-Host "    [UWP apps background]" -f Cyan
+        Write-Host "    [UWP apps background]" -f White
         $apps = @('Microsoft.Windows.Photos_8wekyb3d8bbwe','Microsoft.ZuneVideo_8wekyb3d8bbwe','Microsoft.BingNews_8wekyb3d8bbwe','Microsoft.BingWeather_8wekyb3d8bbwe','Microsoft.GetHelp_8wekyb3d8bbwe','Microsoft.Getstarted_8wekyb3d8bbwe','Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe','Microsoft.People_8wekyb3d8bbwe','Microsoft.SkypeApp_kzf8qxf38zg5c','Microsoft.MicrosoftSolitaireCollection_8wekyb3d8bbwe','Microsoft.WindowsFeedbackHub_8wekyb3d8bbwe','Microsoft.Xbox.TCUI_8wekyb3d8bbwe','Microsoft.XboxApp_8wekyb3d8bbwe','Microsoft.XboxGameOverlay_8wekyb3d8bbwe','Microsoft.XboxGamingOverlay_8wekyb3d8bbwe','Microsoft.XboxIdentityProvider_8wekyb3d8bbwe','Microsoft.YourPhone_8wekyb3d8bbwe','Microsoft.WindowsMaps_8wekyb3d8bbwe','Microsoft.Messaging_8wekyb3d8bbwe','Microsoft.WindowsSoundRecorder_8wekyb3d8bbwe')
         foreach ($app in $apps) {
             $short = $app -replace '_[a-z0-9]+$',''
-            Write-Host "      +-- $short" -f Magenta
+            Write-Host "      +-- $short" -f DarkGray
             $p = "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications\$app"
             reg add "$p" /v Disabled /t REG_DWORD /d 1 /f
             reg add "$p" /v DisabledByUser /t REG_DWORD /d 1 /f
@@ -387,55 +398,55 @@ $Cat_Windows = [ordered]@{
 # ============================================================
 $Cat_Debloat = [ordered]@{
     "Privacy and Telemetry" = {
-        Write-Host "    [Telemetry OFF]" -f Cyan
+        Write-Host "    [Telemetry OFF]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f
-        Write-Host "    [Cortana OFF]" -f Cyan
+        Write-Host "    [Cortana OFF]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowCortana /t REG_DWORD /d 0 /f
-        Write-Host "    [Error Reporting OFF]" -f Cyan
+        Write-Host "    [Error Reporting OFF]" -f White
         reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v Disabled /t REG_DWORD /d 1 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v Disabled /t REG_DWORD /d 1 /f
-        Write-Host "    [Activity Feed OFF]" -f Cyan
+        Write-Host "    [Activity Feed OFF]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v EnableActivityFeed /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v PublishUserActivities /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v UploadUserActivities /t REG_DWORD /d 0 /f
-        Write-Host "    [Windows Update]" -f Cyan
+        Write-Host "    [Windows Update]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v AUPowerManagement /t REG_DWORD /d 0 /f
-        Write-Host "    [Advertising/Location OFF]" -f Cyan
+        Write-Host "    [Advertising/Location OFF]" -f White
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v Start_TrackProgs /t REG_DWORD /d 0 /f
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v Enabled /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v DisableLocation /t REG_DWORD /d 1 /f
     }
     "Windows Services" = {
-        Write-Host "    [Disable services]" -f Cyan
+        Write-Host "    [Disable services]" -f White
         Disable-OServices @('DiagTrack','MapsBroker','XblAuthManager','XblGameSave','XboxNetApiSvc','XboxGipSvc','Fax','RetailDemo','RemoteRegistry','WerSvc')
-        Write-Host "    [Ensure critical services running]" -f Cyan
+        Write-Host "    [Ensure critical services running]" -f White
         foreach($s in @('Audiosrv','AudioEndpointBuilder','Dhcp','NlaSvc','Netman','WlanSvc','RpcSs','EventLog','PlugPlay','LanmanWorkstation','LanmanServer','WSearch')){
-            Write-Host "      +-- [OK] $s" -f Green
+            Write-Host "      +-- [OK] $s" -f Gray
             sc.exe config $s start= auto 2>$null | Out-Null
             sc.exe start $s 2>$null | Out-Null
         }
     }
     "Additional Services v1" = {
-        Write-Host "    [Disable bloat services]" -f Cyan
+        Write-Host "    [Disable bloat services]" -f White
         Disable-OServices @('WpnService','WaaSMedicSvc','SSDPSRV','fdPHost','FDResPub','CDPSvc','CDPUserSvc','PcaSvc','TroubleShootingSvc','DusmSvc','InstallService','PhoneSvc','TapiSrv','SEMgrSvc','SharedAccess','RemoteAccess','lmhosts','WpcMonSvc','ScDeviceEnum','SCardSvr','MessagingService','PimIndexMaintenanceSvc','OneSyncSvc','AJRouter')
     }
     "Additional Services v2" = {
-        Write-Host "    [Disable more services]" -f Cyan
+        Write-Host "    [Disable more services]" -f White
         Disable-OServices @('iphlpsvc','WinRM','wercplsupport','WMPNetworkSvc','UevAgentService','DsSvc','DialogBlockingService','lfsvc','wisvc','WalletService','DsRoleSvc','NcaSvc','NcdAutoSetup','icssvc')
     }
     "Misc Services" = {
-        Write-Host "    [Disable misc]" -f Cyan
+        Write-Host "    [Disable misc]" -f White
         Disable-OServices @('Spooler','SessionEnv','TermService')
-        Write-Host "    [RDP OFF]" -f Cyan
+        Write-Host "    [RDP OFF]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 1 /f
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\CDP" /v RomeSdkConsumerUserSettings /t REG_DWORD /d 0 /f
     }
     "Diagnostic Services" = {
-        Write-Host "    [Disable diagnostics]" -f Cyan
+        Write-Host "    [Disable diagnostics]" -f White
         Disable-OServices @('DPS','WdiServiceHost','WdiSystemHost','diagnosticshub.standardcollector.service','diagsvc')
-        Write-Host "    [WER OFF]" -f Cyan
+        Write-Host "    [WER OFF]" -f White
         $wer = "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting"
         reg add "$wer" /v Disabled /t REG_DWORD /d 1 /f
         reg add "$wer" /v DontShowUI /t REG_DWORD /d 1 /f
@@ -443,80 +454,80 @@ $Cat_Debloat = [ordered]@{
         reg add "$wer" /v AutoApproveOSDumps /t REG_DWORD /d 0 /f
     }
     "Telemetry Tasks" = {
-        Write-Host "    [Disable telemetry tasks]" -f Cyan
+        Write-Host "    [Disable telemetry tasks]" -f White
         $tList = @('\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser','\Microsoft\Windows\Application Experience\ProgramDataUpdater','\Microsoft\Windows\Customer Experience Improvement Program\Consolidator','\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip','\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector','\Microsoft\Windows\Feedback\Siuf\DmClient','\Microsoft\Windows\Maps\MapsToastTask','\Microsoft\Windows\Maps\MapsUpdateTask','\Microsoft\Windows\Windows Error Reporting\QueueReporting','\Microsoft\Windows\CloudExperienceHost\CreateObjectTask','\Microsoft\Windows\PI\Sqm-Tasks','\Microsoft\Windows\Maintenance\WinSAT','\Microsoft\Windows\Autochk\Proxy','\Microsoft\Windows\Registry\RegIdleBackup','\Microsoft\Windows\MemoryDiagnostic\ProcessMemoryDiagnosticEvents','\Microsoft\Windows\MemoryDiagnostic\RunFullMemoryDiagnostic','\Microsoft\Windows\Mobile Broadband Accounts\MNO Metadata Parser','\Microsoft\Windows\Windows Filtering Platform\BfeOnServiceStartTypeChange')
         foreach ($t in $tList) { DisTask $t }
     }
     "Scheduled Tasks v2" = {
-        Write-Host "    [Disable more tasks]" -f Cyan
+        Write-Host "    [Disable more tasks]" -f White
         $tList2 = @('\Microsoft\Windows\DiskFootprint\Diagnostics','\Microsoft\Windows\DiskFootprint\StorageSense','\Microsoft\Windows\PerfTrack\BackgroundConfigSurveyor','\Microsoft\Windows\Shell\FamilySafetyMonitor','\Microsoft\Windows\Shell\FamilySafetyRefreshTask','\Microsoft\Windows\Shell\IndexerAutomaticMaintenance','\Microsoft\Windows\Diagnosis\Scheduled','\Microsoft\Windows\Diagnosis\RecommendedTroubleshootingScanner','\Microsoft\Windows\Windows Error Reporting\QueueReporting','\Microsoft\Windows\Chkdsk\ProactiveScan','\Microsoft\Windows\Defrag\ScheduledDefrag','\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem','\Microsoft\Office\OfficeTelemetryAgentFallBack2016','\Microsoft\Office\OfficeTelemetryAgentLogOn2016','\Microsoft\Office\Office ClickToRun Service Monitor','\MicrosoftEdgeUpdateTaskMachineCore','\MicrosoftEdgeUpdateTaskMachineUA','\Microsoft\EdgeUpdate\EdgeUpdateTaskMachineCore','\Microsoft\EdgeUpdate\EdgeUpdateTaskMachineUA')
         foreach ($t in $tList2) { DisTask $t }
-        Write-Host "    [Edge update services]" -f Cyan
+        Write-Host "    [Edge update services]" -f White
         Disable-OServices @('edgeupdate','edgeupdatem')
     }
     "Autologger Disable" = {
-        Write-Host "    [Disable autologgers]" -f Cyan
+        Write-Host "    [Disable autologgers]" -f White
         $loggers = @('DiagLog','Diagtrack-Listener','Circular Kernel Context Logger','Microsoft-Windows-Rdp-Graphics-RdpIdd-Trace','Microsoft-Windows-Application-Experience','Microsoft-Windows-Application-Experience-Program-Inventory','Microsoft-Windows-Application-Experience-Program-Telemetry','Microsoft-Windows-Kernel-PnP','Microsoft-Windows-SetupPlatform','Microsoft-Windows-SetupQueue','NetCore','NtfsLog','UBPM','UserNotPresentTraceSession','WiFiSession','WindowsDefenderAudit')
         foreach ($l in $loggers) {
-            Write-Host "      +-- $l" -f DarkYellow
+            Write-Host "      +-- $l" -f Gray
             reg add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\$l" /v Start /t REG_DWORD /d 0 /f
         }
-        Write-Host "    [WiFi sense OFF]" -f Cyan
+        Write-Host "    [WiFi sense OFF]" -f White
         reg add "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" /v AutoConnectAllowedOEM /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" /v Value /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" /v Value /t REG_DWORD /d 0 /f
     }
     "ETW Session Disable" = {
-        Write-Host "    [Disable ETW sessions]" -f Cyan
+        Write-Host "    [Disable ETW sessions]" -f White
         foreach ($s in @('DiagLog','Diagtrack-Listener','WiFiSession','UserNotPresentTraceSession','NtfsLog')) {
-            Write-Host "      +-- $s" -f DarkYellow
+            Write-Host "      +-- $s" -f Gray
             reg add "HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger\$s" /v Start /t REG_DWORD /d 0 /f
         }
     }
     "Delivery Optimization" = {
-        Write-Host "    [Delivery Optimization OFF]" -f Cyan
+        Write-Host "    [Delivery Optimization OFF]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" /v DODownloadMode /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v DODownloadMode /t REG_DWORD /d 0 /f
-        Write-Host "    [DoSvc]" -f Cyan
+        Write-Host "    [DoSvc]" -f White
         Disable-OServices @('DoSvc')
     }
     "Network Noise" = {
-        Write-Host "    [SMB1 OFF]" -f Cyan
+        Write-Host "    [SMB1 OFF]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" /v EnableMulticast /t REG_DWORD /d 0 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v DisableBandwidthThrottling /t REG_DWORD /d 1 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v DisableLargeMtu /t REG_DWORD /d 0 /f
         Write-Host "      +-- Set-SmbServerConfiguration SMB1 = off" -f DarkGray
         Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force -EA 0
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Psched" /v NonBestEffortLimit /t REG_DWORD /d 0 /f
-        Write-Host "    [Disable P2P discovery]" -f Cyan
+        Write-Host "    [Disable P2P discovery]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\SSDPSRV" /v Start /t REG_DWORD /d 4 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\fdPHost" /v Start /t REG_DWORD /d 4 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\FDResPub" /v Start /t REG_DWORD /d 4 /f
     }
     "Windows Defender" = {
-        Write-Host "    [Defender realtime OFF]" -f Cyan
+        Write-Host "    [Defender realtime OFF]" -f White
         try { Set-MpPreference -DisableRealtimeMonitoring $true -EA 0 } catch {}
         try { Set-MpPreference -DisableBehaviorMonitoring $true -EA 0 } catch {}
         try { Set-MpPreference -DisableIOAVProtection $true -EA 0 } catch {}
         try { Set-MpPreference -DisableScriptScanning $true -EA 0 } catch {}
         try { Set-MpPreference -SubmitSamplesConsent 2 -EA 0 } catch {}
         try { Set-MpPreference -MAPSReporting 0 -EA 0 } catch {}
-        Write-Host "    [Defender policy OFF]" -f Cyan
+        Write-Host "    [Defender policy OFF]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" /v DisableRealtimeMonitoring /t REG_DWORD /d 1 /f
     }
     "NVIDIA Telemetry" = {
-        Write-Host "    [NVIDIA telemetry tasks]" -f Cyan
+        Write-Host "    [NVIDIA telemetry tasks]" -f White
         $nvT = @('\NVIDIA\NvDriverUpdateCheckDaily{B2FE1952-0786-46D3-8684-AB2B5E2D3B0A}','\NVIDIA\NvTmRep_CrashReport1_{B2FE1952-0786-46D3-8684-AB2B5E2D3B0A}','\NVIDIA\NvTmRep_CrashReport2_{B2FE1952-0786-46D3-8684-AB2B5E2D3B0A}','\NVIDIA\NvTmRep_CrashReport3_{B2FE1952-0786-46D3-8684-AB2B5E2D3B0A}','\NVIDIA\NvTmRep_CrashReport4_{B2FE1952-0786-46D3-8684-AB2B5E2D3B0A}','\NVIDIA\NvTmMon_{B2FE1952-0786-46D3-8684-AB2B5E2D3B0A}')
         foreach ($t in $nvT) { DisTask $t }
-        Write-Host "    [NVIDIA opt-out]" -f Cyan
+        Write-Host "    [NVIDIA opt-out]" -f White
         $nv = "HKLM:\SOFTWARE\NVIDIA Corporation\NvControlPanel2\Client"
         if (Test-Path $nv) { Set-ItemProperty -Path $nv -Name 'OptInOrOutPreference' -Value 0 -Type DWord -Force -EA 0 }
     }
     "System Restore Off" = {
-        Write-Host "    [System Restore OFF]" -f Cyan
+        Write-Host "    [System Restore OFF]" -f White
         Disable-ComputerRestore -Drive "C:\" -EA 0
-        Write-Host "      +-- Delete all shadows" -f Magenta
+        Write-Host "      +-- Delete all shadows" -f DarkGray
         $vp = Start-Process vssadmin -ArgumentList "delete shadows /all /quiet" -NoNewWindow -PassThru -EA 0
         if ($vp -and -not $vp.WaitForExit(10000)) { try { $vp.Kill() } catch {} }
         if ($vp) { $vp.Dispose() }
@@ -530,43 +541,43 @@ $Cat_Debloat = [ordered]@{
 # ============================================================
 $Cat_CPU = [ordered]@{
     "Kernel + Timer (TSC)" = {
-        Write-Host "    [BCDEdit kernel]" -f Cyan
+        Write-Host "    [BCDEdit kernel]" -f White
         bcdedit /deletevalue useplatformclock
         bcdedit /deletevalue useplatformtick
         bcdedit /set disabledynamictick yes
         bcdedit /set tscsyncpolicy Enhanced
         bcdedit /set nx OptOut
-        Write-Host "    [DisablePagingExecutive]" -f Cyan
+        Write-Host "    [DisablePagingExecutive]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v DisablePagingExecutive /t REG_DWORD /d 1 /f
     }
     "Timer Resolution" = {
-        Write-Host "    [GlobalTimerResolutionRequests]" -f Cyan
+        Write-Host "    [GlobalTimerResolutionRequests]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v GlobalTimerResolutionRequests /t REG_DWORD /d 1 /f
     }
     "Timer Resolution Runtime" = {
-        Write-Host "    [NtSetTimerResolution max]" -f Cyan
+        Write-Host "    [NtSetTimerResolution max]" -f White
         $timerCode = 'using System;using System.Runtime.InteropServices;public class WinTimer{[DllImport("ntdll.dll")]public static extern uint NtSetTimerResolution(uint d,bool s,out uint c);[DllImport("ntdll.dll")]public static extern uint NtQueryTimerResolution(out uint mn,out uint mx,out uint c);}'
         try { Add-Type -TypeDefinition $timerCode -EA 0 } catch {}
         $min=0; $max=0; $cur=0
         [WinTimer]::NtQueryTimerResolution([ref]$min,[ref]$max,[ref]$cur) | Out-Null
         [WinTimer]::NtSetTimerResolution($max,$true,[ref]$cur) | Out-Null
         $tv = $max
-        Write-Host "      +-- Timer resolution = $tv" -f Yellow
-        Write-Host "    [Scheduled task on logon]" -f Cyan
+        Write-Host "      +-- Timer resolution = $tv" -f Gray
+        Write-Host "    [Scheduled task on logon]" -f White
         $hp = "$env:SystemRoot\System32\Hybrid_TimerRes.ps1"
         $psBody = "try{Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public class W{[DllImport(`"ntdll.dll`")]public static extern uint NtSetTimerResolution(uint d,bool s,out uint c);}' -EA 0}catch{};`$c=0;[W]::NtSetTimerResolution($tv,`$true,[ref]`$c);while(`$true){Start-Sleep -Seconds 120}"
         [System.IO.File]::WriteAllText($hp, $psBody, [System.Text.Encoding]::Unicode)
         schtasks /Create /TN "Hybrid_TimerResolution" /TR "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$hp`"" /SC ONLOGON /RL HIGHEST /F 2>$null | Out-Null
     }
     "Process Priority" = {
-        Write-Host "    [SystemProfile]" -f Cyan
+        Write-Host "    [SystemProfile]" -f White
         $mm = "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile"
         $g = "$mm\Tasks\Games"
         reg add "HKLM\SYSTEM\CurrentControlSet\Control" /v SvcHostSplitThresholdInKB /t REG_DWORD /d 33554432 /f
         reg add "$mm" /v SystemResponsiveness /t REG_DWORD /d 0 /f
         reg add "$mm" /v NetworkThrottlingIndex /t REG_DWORD /d 4294967295 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Executive" /v AdditionalCriticalWorkerThreads /t REG_DWORD /d 2 /f
-        Write-Host "    [Games task]" -f Cyan
+        Write-Host "    [Games task]" -f White
         reg add "$g" /v "GPU Priority" /t REG_DWORD /d 8 /f
         reg add "$g" /v Priority /t REG_DWORD /d 6 /f
         reg add "$g" /v "Scheduling Category" /t REG_SZ /d High /f
@@ -574,7 +585,7 @@ $Cat_CPU = [ordered]@{
         reg add "$g" /v Affinity /t REG_DWORD /d 0 /f
         reg add "$g" /v "Background Only" /t REG_SZ /d False /f
         reg add "$g" /v "Clock Rate" /t REG_DWORD /d 10000 /f
-        Write-Host "    [Core parking attribute]" -f Cyan
+        Write-Host "    [Core parking attribute]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\501a4d13-42af-4429-9fd1-a8218c268e20\ee12f2c1-98bb-455b-9e09-ae4c1e16cb45" /v Attributes /t REG_DWORD /d 2 /f
     }
     "MMCSS Deep Tuning" = {
@@ -583,10 +594,10 @@ $Cat_CPU = [ordered]@{
         $dp = "$mm\Tasks\Display Post Processing"
         $pa = "$mm\Tasks\Pro Audio"
         $au = "$mm\Tasks\Audio"
-        Write-Host "    [SystemProfile global]" -f Cyan
+        Write-Host "    [SystemProfile global]" -f White
         reg add "$mm" /v AlwaysOn /t REG_DWORD /d 1 /f
         reg add "$mm" /v NoLazyMode /t REG_DWORD /d 1 /f
-        Write-Host "    [Games GPU 18, Latency Sensitive]" -f Cyan
+        Write-Host "    [Games GPU 18, Latency Sensitive]" -f White
         reg add "$g" /v "GPU Priority" /t REG_DWORD /d 18 /f
         reg add "$g" /v Priority /t REG_DWORD /d 6 /f
         reg add "$g" /v "Scheduling Category" /t REG_SZ /d High /f
@@ -595,7 +606,7 @@ $Cat_CPU = [ordered]@{
         reg add "$g" /v "Background Only" /t REG_SZ /d False /f
         reg add "$g" /v Affinity /t REG_DWORD /d 0 /f
         reg add "$g" /v "Latency Sensitive" /t REG_SZ /d True /f
-        Write-Host "    [Display Post Processing]" -f Cyan
+        Write-Host "    [Display Post Processing]" -f White
         reg add "$dp" /v "GPU Priority" /t REG_DWORD /d 18 /f
         reg add "$dp" /v Priority /t REG_DWORD /d 8 /f
         reg add "$dp" /v "Scheduling Category" /t REG_SZ /d High /f
@@ -605,15 +616,15 @@ $Cat_CPU = [ordered]@{
         reg add "$dp" /v Affinity /t REG_DWORD /d 0 /f
         reg add "$dp" /v BackgroundPriority /t REG_DWORD /d 24 /f
         reg add "$dp" /v "Latency Sensitive" /t REG_SZ /d True /f
-        Write-Host "    [Pro Audio]" -f Cyan
+        Write-Host "    [Pro Audio]" -f White
         reg add "$pa" /v Affinity /t REG_DWORD /d 7 /f
         reg add "$pa" /v "Latency Sensitive" /t REG_SZ /d True /f
-        Write-Host "    [Audio]" -f Cyan
+        Write-Host "    [Audio]" -f White
         reg add "$au" /v Affinity /t REG_DWORD /d 7 /f
         reg add "$au" /v "Scheduling Category" /t REG_SZ /d Medium /f
     }
     "Audio Latency" = {
-        Write-Host "    [Pro Audio task]" -f Cyan
+        Write-Host "    [Pro Audio task]" -f White
         $a = "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Pro Audio"
         reg add "$a" /v Affinity /t REG_DWORD /d 0 /f
         reg add "$a" /v "Background Only" /t REG_SZ /d False /f
@@ -624,16 +635,16 @@ $Cat_CPU = [ordered]@{
         reg add "$a" /v "SFIO Priority" /t REG_SZ /d High /f
     }
     "Processor Power" = {
-        Write-Host "    [CPU throttle 100% min/max]" -f Cyan
+        Write-Host "    [CPU throttle 100% min/max]" -f White
         powercfg /setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMIN 100
         powercfg /setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMAX 100
         powercfg /setactive SCHEME_CURRENT
-        Write-Host "    [Hibernate OFF]" -f Cyan
+        Write-Host "    [Hibernate OFF]" -f White
         powercfg /hibernate off
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v HiberbootEnabled /t REG_DWORD /d 0 /f
     }
     "CPU Core Parking" = {
-        Write-Host "    [Core parking 100% min/max]" -f Cyan
+        Write-Host "    [Core parking 100% min/max]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\0cc5b647-c1df-4637-891a-dec35c318583" /v ValueMin /t REG_DWORD /d 0 /f
         powercfg /setacvalueindex SCHEME_CURRENT SUB_PROCESSOR CPMINCORES 100
         powercfg /setacvalueindex SCHEME_CURRENT SUB_PROCESSOR CPMAXCORES 100
@@ -642,9 +653,9 @@ $Cat_CPU = [ordered]@{
         powercfg /setactive SCHEME_CURRENT
     }
     "CPU Scheduling Deep" = {
-        Write-Host "    [PriorityControl]" -f Cyan
+        Write-Host "    [PriorityControl]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v Win32PrioritySeparation /t REG_DWORD /d 0xFA332A /f
-        Write-Host "    [Prefetch/Superfetch]" -f Cyan
+        Write-Host "    [Prefetch/Superfetch]" -f White
         $pp = "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters"
         $hasHDD = Get-PhysicalDisk | Where-Object { $_.MediaType -eq 'HDD' }
         if ($hasHDD) {
@@ -658,14 +669,14 @@ $Cat_CPU = [ordered]@{
         }
     }
     "Spectre and Meltdown" = {
-        Write-Host "    [Disable Spectre/Meltdown mitigations]" -f Cyan
+        Write-Host "    [Disable Spectre/Meltdown mitigations]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverride /t REG_DWORD /d 3 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverrideMask /t REG_DWORD /d 3 /f
     }
     "Exploit Protection" = {
-        Write-Host "    [CFG OFF]" -f Cyan
+        Write-Host "    [CFG OFF]" -f White
         try { Set-ProcessMitigation -System -Disable CFG -EA 0 } catch {}
-        Write-Host "    [SEHOP OFF]" -f Cyan
+        Write-Host "    [SEHOP OFF]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v DisableExceptionChainValidation /t REG_DWORD /d 1 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v MoveImages /t REG_DWORD /d 0 /f
     }
@@ -676,23 +687,23 @@ $Cat_CPU = [ordered]@{
 # ============================================================
 $Cat_Misc = [ordered]@{
     "Memory Management" = {
-        Write-Host "    [Memory Management]" -f Cyan
+        Write-Host "    [Memory Management]" -f White
         $mmPath = "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management"
         reg add "$mmPath" /v SystemCacheDirtyPageThreshold /t REG_DWORD /d 0 /f
         reg add "$mmPath" /v ClearPageFileAtShutdown /t REG_DWORD /d 0 /f
-        Write-Host "    [Hibernate OFF]" -f Cyan
+        Write-Host "    [Hibernate OFF]" -f White
         powercfg -h off
-        Write-Host "    [OneDrive kill]" -f Cyan
-        Write-Host "      +-- Kill OneDrive.exe" -f Magenta
+        Write-Host "    [OneDrive kill]" -f White
+        Write-Host "      +-- Kill OneDrive.exe" -f DarkGray
         taskkill /f /im OneDrive.exe 2>$null | Out-Null
         reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v OneDrive /f 2>$null | Out-Null
     }
     "Memory Compression" = {
-        Write-Host "    [Disable-MMAgent MemoryCompression]" -f Cyan
+        Write-Host "    [Disable-MMAgent MemoryCompression]" -f White
         try { Disable-MMAgent -MemoryCompression -EA 0 } catch {}
     }
     "LargeSystemCache + IoPageLockLimit" = {
-        Write-Host "    [RAM-aware cache settings]" -f Cyan
+        Write-Host "    [RAM-aware cache settings]" -f White
         $ramGB = [math]::Round((Get-CimInstance Win32_ComputerSystem -EA 0).TotalPhysicalMemory / 1GB)
         Write-Host "      +-- RAM = ${ramGB}GB" -f DarkGray
         $lsc = if ($ramGB -ge 16) { 1 } else { 0 }
@@ -703,7 +714,7 @@ $Cat_Misc = [ordered]@{
         reg add "$mmReg" /v IoPageLockLimit /t REG_DWORD /d $iol /f
     }
     "Pagefile Optimize" = {
-        Write-Host "    [Pagefile fixed 50% RAM]" -f Cyan
+        Write-Host "    [Pagefile fixed 50% RAM]" -f White
         $csObj = Get-CimInstance Win32_ComputerSystem -EA 0
         if ($csObj) {
             $csObj.AutomaticManagedPagefile = $false
@@ -712,7 +723,7 @@ $Cat_Misc = [ordered]@{
         Start-Sleep -Milliseconds 500
         $ramMB2 = [math]::Round((Get-CimInstance Win32_ComputerSystem -EA 0).TotalPhysicalMemory / 1MB)
         $pfsz = [math]::Max(4096, [math]::Round($ramMB2 * 0.5))
-        Write-Host "      +-- Size = ${pfsz}MB" -f Yellow
+        Write-Host "      +-- Size = ${pfsz}MB" -f Gray
         $pfObj = Get-CimInstance -ClassName Win32_PageFileSetting -Filter "SettingID='pagefile.sys @ C:'" -EA 0
         if ($pfObj) {
             $pfObj.InitialSize = $pfsz
@@ -727,7 +738,7 @@ $Cat_Misc = [ordered]@{
                 $pgNew.Put() | Out-Null
             } catch {}
         }
-        Write-Host "    [Non-C: indexing OFF]" -f Cyan
+        Write-Host "    [Non-C: indexing OFF]" -f White
         Get-Volume | Where-Object { $_.DriveType -eq 'Fixed' -and $_.DriveLetter -and $_.DriveLetter -ne 'C' } | ForEach-Object {
             Write-Host "      +-- $($_.DriveLetter): indexing OFF" -f DarkGray
             $vObj = Get-CimInstance -ClassName Win32_Volume -Filter "DriveLetter='$($_.DriveLetter):'" -EA 0
@@ -738,36 +749,36 @@ $Cat_Misc = [ordered]@{
         }
     }
     "Storage Optimizations" = {
-        Write-Host "    [8dot3 OFF, TRIM ON]" -f Cyan
+        Write-Host "    [8dot3 OFF, TRIM ON]" -f White
         fsutil behavior set disable8dot3 1 2>$null | Out-Null
         fsutil behavior set disabledeletenotify 0 2>$null | Out-Null
-        Write-Host "    [ReTrim all volumes]" -f Cyan
+        Write-Host "    [ReTrim all volumes]" -f White
         Get-Volume | Where-Object { $_.DriveType -eq 'Fixed' -and $_.DriveLetter } | ForEach-Object {
             Write-Host "      +-- $($_.DriveLetter): ReTrim" -f DarkGray
             Optimize-Volume -DriveLetter $_.DriveLetter -ReTrim -EA 0
         }
     }
     "NTFS Deep" = {
-        Write-Host "    [NTFS tuning]" -f Cyan
+        Write-Host "    [NTFS tuning]" -f White
         $fs = "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem"
         reg add "$fs" /v NtfsMemoryUsage /t REG_DWORD /d 2 /f
         reg add "$fs" /v NtfsDisableLastAccessUpdate /t REG_DWORD /d 2147483649 /f
         reg add "$fs" /v NtfsDisable8dot3NameCreation /t REG_DWORD /d 1 /f
         reg add "$fs" /v PathCache /t REG_DWORD /d 128 /f
         reg add "$fs" /v Win31FileSystem /t REG_DWORD /d 0 /f
-        Write-Host "    [EFS OFF]" -f Cyan
+        Write-Host "    [EFS OFF]" -f White
         Disable-OServices @('EFS')
     }
     "NVMe Deep" = {
-        Write-Host "    [NVMe idle/ASPM OFF]" -f Cyan
+        Write-Host "    [NVMe idle/ASPM OFF]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\stornvme\Parameters\Device" /v IdlePowerStateEnabled /t REG_DWORD /d 0 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\stornvme\Parameters\Device" /v NvmeDisableASPM /t REG_DWORD /d 1 /f
-        Write-Host "    [NVMe IRQ affinity]" -f Cyan
+        Write-Host "    [NVMe IRQ affinity]" -f White
         Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\Enum\PCI' -EA 0 | Where-Object {
             (Get-ItemProperty $_.PSPath -Name 'HardwareID' -EA 0).HardwareID -match 'NVMe|stornvme'
         } | ForEach-Object {
             $desc = (Get-ItemProperty $_.PSPath -Name 'DeviceDesc' -EA 0).DeviceDesc
-            Write-Host "      +-- $desc -> Core 1" -f Yellow
+            Write-Host "      +-- $desc -> Core 1" -f Gray
             $aff = ($_.PSPath + '\Device Parameters\Interrupt Management\Affinity Policy')
             if (-not (Test-Path $aff)) { New-Item -Path $aff -Force -EA 0 | Out-Null }
             Set-ItemProperty -Path $aff -Name 'DevicePolicy' -Value 4 -Type DWord -Force -EA 0
@@ -776,28 +787,28 @@ $Cat_Misc = [ordered]@{
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\stornvme\Parameters" /v IoTimeoutValue /t REG_DWORD /d 255 /f
     }
     "GPU Display (HAGS OFF)" = {
-        Write-Host "    [HAGS OFF]" -f Cyan
+        Write-Host "    [HAGS OFF]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v HwSchMode /t REG_DWORD /d 1 /f
         reg add "HKLM\SOFTWARE\Microsoft\DirectX\GraphicsSettings" /v HwSchMode /t REG_DWORD /d 1 /f
-        Write-Host "    [TDR settings]" -f Cyan
+        Write-Host "    [TDR settings]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v TdrLevel /t REG_DWORD /d 2 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v TdrDelay /t REG_DWORD /d 60 /f
     }
     "GPU Cache Cleanup" = {
-        Write-Host "    [Delete GPU caches]" -f Cyan
+        Write-Host "    [Delete GPU caches]" -f White
         $gCaches = @("$env:LOCALAPPDATA\NVIDIA\DXCache\*","$env:LOCALAPPDATA\NVIDIA\GLCache\*","$env:LOCALAPPDATA\AMD\DxCache\*","$env:LOCALAPPDATA\D3DSCache\*","$env:WINDIR\SoftwareDistribution\DeliveryOptimization\*")
         foreach ($gc in $gCaches) {
-            Write-Host "      +-- clean $gc" -f Magenta
+            Write-Host "      +-- clean $gc" -f DarkGray
             Remove-Item -Path $gc -Recurse -Force -EA 0
         }
     }
     "IRQ MSI Mode" = {
-        Write-Host "    [Enable MSI + DevicePriority for all PCI]" -f Cyan
+        Write-Host "    [Enable MSI + DevicePriority for all PCI]" -f White
         Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\Enum\PCI' -EA 0 | ForEach-Object {
             $msi = ($_.PSPath + '\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties')
             if (Test-Path $msi) {
                 $desc = (Get-ItemProperty $_.PSPath -Name 'DeviceDesc' -EA 0).DeviceDesc
-                Write-Host "      +-- MSI: $desc" -f Yellow
+                Write-Host "      +-- MSI: $desc" -f Gray
                 Set-ItemProperty -Path $msi -Name MSISupported -Value 1 -Type DWord -Force -EA 0
                 $aff = ($_.PSPath + '\Device Parameters\Interrupt Management\Affinity Policy')
                 if (-not (Test-Path $aff)) { New-Item -Path $aff -Force -EA 0 | Out-Null }
@@ -806,46 +817,46 @@ $Cat_Misc = [ordered]@{
         }
     }
     "Interrupt Affinity" = {
-        Write-Host "    [Per-device IRQ affinity]" -f Cyan
+        Write-Host "    [Per-device IRQ affinity]" -f White
         Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\Enum\PCI' -EA 0 | ForEach-Object {
             $desc = (Get-ItemProperty $_.PSPath -Name 'DeviceDesc' -EA 0).DeviceDesc
             $hwid = (Get-ItemProperty $_.PSPath -Name 'HardwareID' -EA 0).HardwareID
             $aff = ($_.PSPath + '\Device Parameters\Interrupt Management\Affinity Policy')
             if (-not (Test-Path $aff)) { New-Item -Path $aff -Force -EA 0 | Out-Null }
             if ($hwid -and ($hwid[0] -match 'VEN_10DE' -or $hwid[0] -match 'VEN_1002')) {
-                Write-Host "      +-- GPU: $desc -> Core 1" -f Yellow
+                Write-Host "      +-- GPU: $desc -> Core 1" -f Gray
                 Set-ItemProperty -Path $aff -Name 'DevicePolicy' -Value 4 -Type DWord -Force -EA 0
                 Set-ItemProperty -Path $aff -Name 'AssignmentSetOverride' -Value 0x02 -Type DWord -Force -EA 0
             }
             if ($desc -match 'Ethernet|Network|LAN|Intel.*Connection' -or ($hwid -and ($hwid[0] -match 'VEN_8086.*DEV_15' -or $hwid[0] -match 'VEN_10EC'))) {
-                Write-Host "      +-- NIC: $desc -> Core 2" -f Yellow
+                Write-Host "      +-- NIC: $desc -> Core 2" -f Gray
                 Set-ItemProperty -Path $aff -Name 'DevicePolicy' -Value 4 -Type DWord -Force -EA 0
                 Set-ItemProperty -Path $aff -Name 'AssignmentSetOverride' -Value 0x04 -Type DWord -Force -EA 0
             }
             if ($desc -match 'USB|xHCI|Host Controller') {
-                Write-Host "      +-- USB: $desc -> Core 3" -f Yellow
+                Write-Host "      +-- USB: $desc -> Core 3" -f Gray
                 Set-ItemProperty -Path $aff -Name 'DevicePolicy' -Value 4 -Type DWord -Force -EA 0
                 Set-ItemProperty -Path $aff -Name 'AssignmentSetOverride' -Value 0x08 -Type DWord -Force -EA 0
             }
         }
     }
     "Hyper-V and VBS" = {
-        Write-Host "    [Hyper-V OFF]" -f Cyan
+        Write-Host "    [Hyper-V OFF]" -f White
         dism /Online /Disable-Feature /FeatureName:Microsoft-Hyper-V-All /NoRestart 2>$null | Out-Null
         bcdedit /set hypervisorlaunchtype off
-        Write-Host "    [VBS/HVCI OFF]" -f Cyan
+        Write-Host "    [VBS/HVCI OFF]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 0 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\LSA" /v LsaCfgFlags /t REG_DWORD /d 0 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\KernelShadowStacks" /v Enabled /t REG_DWORD /d 0 /f
     }
     "VBS/HVCI Core Isolation" = {
-        Write-Host "    [Core Isolation extra OFF]" -f Cyan
+        Write-Host "    [Core Isolation extra OFF]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v RequirePlatformSecurityFeatures /t REG_DWORD /d 0 /f
         bcdedit /set vsmlaunchtype Off
     }
     "PCI-E ASPM" = {
-        Write-Host "    [ASPM OFF]" -f Cyan
+        Write-Host "    [ASPM OFF]" -f White
         powercfg /setacvalueindex SCHEME_CURRENT SUB_PCIEXPRESS ASPM 0
         powercfg /setactive SCHEME_CURRENT
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\PnP\Pci" /v DisableASPM /t REG_DWORD /d 1 /f
@@ -853,23 +864,23 @@ $Cat_Misc = [ordered]@{
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\stornvme\Parameters\Device" /v NvmeDisableASPM /t REG_DWORD /d 1 /f
     }
     "Connected Standby" = {
-        Write-Host "    [Connected Standby OFF]" -f Cyan
+        Write-Host "    [Connected Standby OFF]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v CsEnabled /t REG_DWORD /d 0 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v PlatformAoAcOverride /t REG_DWORD /d 0 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v AwayModeEnabled /t REG_DWORD /d 0 /f
     }
     "Device Power" = {
-        Write-Host "    [USB hub idle OFF]" -f Cyan
+        Write-Host "    [USB hub idle OFF]" -f White
         Get-CimInstance -ClassName Win32_USBHub -EA 0 | ForEach-Object {
             Write-Host "      +-- $($_.Name)" -f DarkGray
             $r = "HKLM:\SYSTEM\CurrentControlSet\Enum\$($_.PNPDeviceID)\Device Parameters\WDF"
             if (Test-Path $r) { Set-ItemProperty -Path $r -Name 'IdleInWorkingState' -Value 0 -Type DWord -Force -EA 0 }
         }
-        Write-Host "    [NVMe idle power OFF]" -f Cyan
+        Write-Host "    [NVMe idle power OFF]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\stornvme\Parameters\Device" /v IdlePowerStateEnabled /t REG_DWORD /d 0 /f
     }
     "USB Power Deep" = {
-        Write-Host "    [USB hub/controller idle OFF]" -f Cyan
+        Write-Host "    [USB hub/controller idle OFF]" -f White
         Get-CimInstance -ClassName Win32_USBHub -EA 0 | ForEach-Object {
             Write-Host "      +-- $($_.Name)" -f DarkGray
             $r = "HKLM:\SYSTEM\CurrentControlSet\Enum\$($_.PNPDeviceID)\Device Parameters"
@@ -881,7 +892,7 @@ $Cat_Misc = [ordered]@{
             $r = "HKLM:\SYSTEM\CurrentControlSet\Enum\$($_.PNPDeviceID)\Device Parameters\WDF"
             if (Test-Path $r) { Set-ItemProperty -Path $r -Name 'IdleInWorkingState' -Value 0 -Type DWord -Force -EA 0 }
         }
-        Write-Host "    [Selective Suspend OFF]" -f Cyan
+        Write-Host "    [Selective Suspend OFF]" -f White
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\USB" /v DisableSelectiveSuspend /t REG_DWORD /d 1 /f
     }
 }
@@ -891,20 +902,20 @@ $Cat_Misc = [ordered]@{
 # ============================================================
 $Cat_Clean = [ordered]@{
     "Junk and Log Cleanup" = {
-        Write-Host "    [Delete temp files]" -f Cyan
+        Write-Host "    [Delete temp files]" -f White
         $tmpPaths = @("$env:TEMP\*","$env:WINDIR\Temp\*","$env:WINDIR\Prefetch\*")
         foreach ($tp in $tmpPaths) {
-            Write-Host "      +-- clean $tp" -f Magenta
+            Write-Host "      +-- clean $tp" -f DarkGray
             Remove-Item -Path $tp -Recurse -Force -EA 0
         }
-        Write-Host "    [Windows Update cache]" -f Cyan
+        Write-Host "    [Windows Update cache]" -f White
         Stop-Service wuauserv -Force -EA 0
         Stop-Service UsoSvc -Force -EA 0
-        Write-Host "      +-- clean SoftwareDistribution\Download" -f Magenta
+        Write-Host "      +-- clean SoftwareDistribution\Download" -f DarkGray
         Remove-Item -Path "$env:WINDIR\SoftwareDistribution\Download\*" -Recurse -Force -EA 0
         Start-Service wuauserv -EA 0
-        Write-Host "    [Clear event logs]" -f Cyan
-        $logNames = Get-WinEvent -ListLog * -EA 0 | Where-Object { $_.RecordCount -gt 0 -and $_.IsEnabled } | Select-Object -ExpandProperty LogName
+        Write-Host "    [Clear event logs]" -f White
+        $logNames = Get-WinEvent -ListLog * -EA 0 | Where- $_.IsEnabled } | Select-Object { $_.RecordCount -gt 0 -andObject -ExpandProperty LogName
         $logCount = 0
         foreach ($ln in $logNames) {
             $logCount++
@@ -913,8 +924,8 @@ $Cat_Clean = [ordered]@{
             if ($p -and -not $p.WaitForExit(3000)) { try { $p.Kill() } catch {} }
             if ($p) { $p.Dispose() }
         }
-        Write-Host "      +-- $logCount logs cleared" -f Yellow
-        Write-Host "    [Recycle Bin]" -f Cyan
+        Write-Host "      +-- $logCount logs cleared" -f Gray
+        Write-Host "    [Recycle Bin]" -f White
         Clear-RecycleBin -Force -EA 0
     }
 }
@@ -926,7 +937,7 @@ $Cat_Network = [ordered]@{
     "Network and DNS" = {
         $ntp = "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
         $afd = "HKLM\SYSTEM\CurrentControlSet\Services\AFD\Parameters"
-        Write-Host "    [TCP global]" -f Cyan
+        Write-Host "    [TCP global]" -f White
         netsh int tcp set global rss=enabled
         netsh int tcp set global autotuninglevel=normal
         netsh int tcp set global timestamps=disabled
@@ -936,9 +947,9 @@ $Cat_Network = [ordered]@{
         netsh int tcp set global ecncapability=enabled
         netsh int tcp set global fastopen=enabled
         netsh int udp set global uro=disabled
-        Write-Host "    [QoS]" -f Cyan
+        Write-Host "    [QoS]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Psched" /v NonBestEffortLimit /t REG_DWORD /d 0 /f
-        Write-Host "    [Tcpip\Parameters]" -f Cyan
+        Write-Host "    [Tcpip\Parameters]" -f White
         reg add "$ntp" /v TCPNoDelay /t REG_DWORD /d 1 /f
         reg add "$ntp" /v TcpAckFrequency /t REG_DWORD /d 1 /f
         reg add "$ntp" /v DefaultTTL /t REG_DWORD /d 64 /f
@@ -946,35 +957,35 @@ $Cat_Network = [ordered]@{
         reg add "$ntp" /v EnablePMTUDiscovery /t REG_DWORD /d 1 /f
         reg add "$ntp" /v EnableRSS /t REG_DWORD /d 1 /f
         reg add "$ntp" /v EnableTCPChimney /t REG_DWORD /d 0 /f
-        Write-Host "    [AFD Parameters]" -f Cyan
+        Write-Host "    [AFD Parameters]" -f White
         reg add "$afd" /v FastSendDatagramThreshold /t REG_DWORD /d 65536 /f
         reg add "$afd" /v DefaultReceiveWindow /t REG_DWORD /d 16384 /f
         reg add "$afd" /v DefaultSendWindow /t REG_DWORD /d 16384 /f
-        reg add "$afd" /v FastCopyReceiveThreshold /t REG_DWORD /d 1536 /f
-        Write-Host "    [DNS multicast OFF]" -f Cyan
-        reg add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\QoS" /v "Do not use NLA" /t REG_SZ /d 1 /f
+        reg add "$afd" /v FastCopyReceiveThreshold /t REG_DWORD /d 1536 /f\Services\Tcpip\QoS" /v "Do not use NLA" /t REG_SZ /d 1 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" /v EnableMulticast /t REG_DWORD /d 0 /f
-        Write-Host "    [NetBIOS OFF on all interfaces]" -f Cyan
+        Write-Host "    [NetBIOS OFF on all interfaces]" -f White
         Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces' -EA 0 | ForEach-Object {
             Set-ItemProperty -Path $_.PSPath -Name NetbiosOptions -Value 2 -EA 0
         }
-        Write-Host "    [NIC: LSO OFF, InterruptModeration OFF]" -f Cyan
+        Write-Host "    [NIC: LSO OFF, InterruptModeration OFF]" -f White
         Get-PhysNIC | ForEach-Object {
             Write-Host "      +-- $($_.Name)" -f DarkGray
             Disable-NetAdapterLso -Name $_.Name -EA 0
             Set-NetAdapterAdvancedProperty -Name $_.Name -RegistryKeyword '*InterruptModeration' -RegistryValue 0 -EA 0
         }
-        Write-Host "    [DNS servers: 1.1.1.1, 8.8.8.8]" -f Cyan
+        Write-Host "    [DNS servers: 1.1.1.1, 8.8.8.8]" -f White
         Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.Physical } | ForEach-Object {
-            Write-Host "      +-- $($_.Name) -> 1.1.1.1, 8.8.8.8" -f Yellow
+            Write-Host "      +-- $($_.Name) -> 1.1.1.1, 8.8.8.8" -f Gray
             Set-DnsClientServerAddress -InterfaceIndex $_.ifIndex -ServerAddresses ('1.1.1.1','8.8.8.8') -EA 0
             Disable-NetAdapterPowerManagement -Name $_.Name -EA 0
         }
-        Write-Host "    [flushdns]" -f Cyan
+        Write-Host "    [flushDNS multicast OFF]" -f White
+        reg add "
+        Write-Host "    [HKLM\SYSTEM\CurrentControlSetdns]" -f White
         ipconfig /flushdns 2>$null | Out-Null
     }
     "Nagle Algorithm" = {
-        Write-Host "    [Per-interface Nagle OFF]" -f Cyan
+        Write-Host "    [Per-interface Nagle OFF]" -f White
         Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces' -EA 0 | ForEach-Object {
             Set-ItemProperty -Path $_.PSPath -Name TcpAckFrequency -Value 1 -Type DWord -Force -EA 0
             Set-ItemProperty -Path $_.PSPath -Name TCPNoDelay -Value 1 -Type DWord -Force -EA 0
@@ -982,7 +993,7 @@ $Cat_Network = [ordered]@{
         }
     }
     "NIC Advanced" = {
-        Write-Host "    [NIC advanced properties]" -f Cyan
+        Write-Host "    [NIC advanced properties]" -f White
         Get-PhysNIC | ForEach-Object {
             $n = $_.Name
             Write-Host "      +-- [$n]" -f White
@@ -999,26 +1010,26 @@ $Cat_Network = [ordered]@{
         }
     }
     "NIC Flow + RSS Core" = {
-        Write-Host "    [NIC Flow/RSS/IPv6]" -f Cyan
+        Write-Host "    [NIC Flow/RSS/IPv6]" -f White
         Get-PhysNIC | ForEach-Object {
             $n = $_.Name
             Write-Host "      +-- [$n]" -f White
             NicDisp $n 'Packet Coalescing' 'Disabled'
-            NicProp $n '*RssBaseProcNumber' 2
-            $cores = (Get-CimInstance Win32_Processor -EA 0).NumberOfLogicalProcessors
+or -EA 0).NumberOfLogicalProcessors
             NicProp $n '*MaxRssProcessors' $cores
             Write-Host "      |  +-- IPv6 binding OFF" -f DarkGray
             Disable-NetAdapterBinding -Name $n -ComponentID ms_tcpip6 -EA 0
         }
     }
-    "NIC Power Deep" = {
-        Write-Host "    [NIC power management full OFF]" -f Cyan
+            NicProp $n '*RssBaseProcNumber' 2
+            $cores = (Get-CimInstance Win32_Process    "NIC Power Deep" = {
+        Write-Host "    [NIC power management full OFF]" -f White
         Get-PhysNIC | ForEach-Object {
             $n = $_.Name
             Write-Host "      +-- [$n]" -f White
             Disable-NetAdapterPowerManagement -Name $n -EA 0 'Disabled'
-            NicDisp $n 'Wake on pattern
-            NicDisp $n 'Wake on Magic Packet' match' 'Disabled'
+            NicDisp $n 'Wake on Magic Packet' 'Disabled'
+            NicDisp $n 'Wake on pattern match' 'Disabled'
             NicDisp $n 'Green Ethernet' 'Disabled'
             NicDisp $n 'Energy Efficient Ethernet' 'Disabled'
             NicProp $n '*AutoPowerSaveModeEnabled' 0
@@ -1028,7 +1039,7 @@ $Cat_Network = [ordered]@{
         powercfg /setactive SCHEME_CURRENT
     }
     "LSO + RSS Queues" = {
-        Write-Host "    [LSO OFF, RSS queues]" -f Cyan
+        Write-Host "    [LSO OFF, RSS queues]" -f White
         Get-PhysNIC | ForEach-Object {
             $n = $_.Name
             Write-Host "      +-- [$n]" -f White
@@ -1041,7 +1052,7 @@ $Cat_Network = [ordered]@{
         }
     }
     "TCP Window / BDP Tuning" = {
-        Write-Host "    [TCP window tuning]" -f Cyan
+        Write-Host "    [TCP window tuning]" -f White
         $ntp = "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
         $afd = "HKLM\SYSTEM\CurrentControlSet\Services\AFD\Parameters"
         reg add "$ntp" /v Tcp1323Opts /t REG_DWORD /d 1 /f
@@ -1054,7 +1065,7 @@ $Cat_Network = [ordered]@{
         reg add "$afd" /v DefaultSendWindow /t REG_DWORD /d 65536 /f
     }
     "TCP Congestion" = {
-        Write-Host "    [Cubic congestion]" -f Cyan
+        Write-Host "    [Cubic congestion]" -f White
         netsh int tcp set supplemental template=Internet congestionprovider=cubic
         netsh int tcp set supplemental template=Internet initialrto=1000
         netsh int tcp set supplemental template=Internet icw=10
@@ -1063,7 +1074,7 @@ $Cat_Network = [ordered]@{
         netsh int tcp set supplemental template=Datacenter icw=10
     }
     "UDP Buffer" = {
-        Write-Host "    [UDP buffers]" -f Cyan
+        Write-Host "    [UDP buffers]" -f White
         $ntp = "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
         $afd = "HKLM\SYSTEM\CurrentControlSet\Services\AFD\Parameters"
         reg add "$afd" /v DatagramSendBufferLength /t REG_DWORD /d 65536 /f
@@ -1073,17 +1084,17 @@ $Cat_Network = [ordered]@{
         reg add "$ntp" /v MaxNumForwardPackets /t REG_DWORD /d 65536 /f
     }
     "QoS + DSCP" = {
-        Write-Host "    [QoS/DSCP]" -f Cyan
+        Write-Host "    [QoS/DSCP]" -f White
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Psched" /v NonBestEffortLimit /t REG_DWORD /d 0 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" /v DefaultTOSValue /t REG_DWORD /d 184 /f
     }
     "DNS Cache + Flush" = {
-        Write-Host "    [DNS cache flush]" -f Cyan
+        Write-Host "    [DNS cache flush]" -f White
         ipconfig /flushdns 2>$null | Out-Null
         nbtstat -R 2>$null | Out-Null
         nbtstat -RR 2>$null | Out-Null
         arp -d * 2>$null | Out-Null
-        Write-Host "    [DNS cache tuning]" -f Cyan
+        Write-Host "    [DNS cache tuning]" -f White
         $dns = "HKLM\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters"
         reg add "$dns" /v MaxCacheEntryTtlLimit /t REG_DWORD /d 86400 /f
         reg add "$dns" /v MaxSOACacheEntryTtlLimit /t REG_DWORD /d 120 /f
@@ -1091,23 +1102,23 @@ $Cat_Network = [ordered]@{
         reg add "$dns" /v NetFailureCacheTime /t REG_DWORD /d 0 /f
         reg add "$dns" /v NegativeSOACacheTime /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" /v EnableMulticast /t REG_DWORD /d 0 /f
-        Write-Host "    [NetBIOS OFF]" -f Cyan
+        Write-Host "    [NetBIOS OFF]" -f White
         Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces' -EA 0 | ForEach-Object {
             Set-ItemProperty -Path $_.PSPath -Name NetbiosOptions -Value 2 -EA 0
         }
     }
     "TCP KeepAlive + SYN Protection" = {
-        Write-Host "    [KeepAlive]" -f Cyan
+        Write-Host "    [KeepAlive]" -f White
         $ntp = "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
         reg add "$ntp" /v KeepAliveTime /t REG_DWORD /d 300000 /f
         reg add "$ntp" /v KeepAliveInterval /t REG_DWORD /d 1000 /f
         reg add "$ntp" /v TcpNumConnections /t REG_DWORD /d 16777214 /f
-        Write-Host "    [SYN protection]" -f Cyan
+        Write-Host "    [SYN protection]" -f White
         reg add "$ntp" /v SynAttackProtect /t REG_DWORD /d 1 /f
         reg add "$ntp" /v TcpMaxConnectResponseRetransmissions /t REG_DWORD /d 2 /f
     }
     "WiFi Optimize" = {
-        Write-Host "    [WiFi adapter tuning]" -f Cyan
+        Write-Host "    [WiFi adapter tuning]" -f White
         Get-NetAdapter -Physical -EA 0 | Where-Object {
             $_.MediaType -eq 'Native 802.11' -or $_.InterfaceDescription -match 'Wi-Fi|Wireless|WiFi|WLAN'
         } | ForEach-Object {
@@ -1120,7 +1131,7 @@ $Cat_Network = [ordered]@{
             NicProp $n '*PreferredBand' 2
             NicProp $n '*ThroughputBooster' 0
         }
-        Write-Host "    [WiFi auto-connect OFF]" -f Cyan
+        Write-Host "    [WiFi auto-connect OFF]" -f White
         reg add "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" /v AutoConnectAllowedOEM /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WcmSvc\GroupPolicy" /v fMinimizeConnections /t REG_DWORD /d 1 /f
     }
@@ -1131,7 +1142,7 @@ $Cat_Network = [ordered]@{
 # ============================================================
 $Cat_Nvidia = [ordered]@{
     "NVIDIA Low Latency" = {
-        Write-Host "    [PowerMizer + Preemption OFF]" -f Cyan
+        Write-Host "    [PowerMizer + Preemption OFF]" -f White
         Get-NvidiaGPU | ForEach-Object {
             $p = $_.PSPath
             $desc = (Get-ItemProperty $p -Name 'DriverDesc' -EA 0).DriverDesc
@@ -1153,7 +1164,7 @@ $Cat_Nvidia = [ordered]@{
         }
     }
     "NVIDIA Shader + ReBAR" = {
-        Write-Host "    [Shader cache + ReBAR]" -f Cyan
+        Write-Host "    [Shader cache + ReBAR]" -f White
         Get-NvidiaGPU | ForEach-Object {
             $p = $_.PSPath
             $desc = (Get-ItemProperty $p -Name 'DriverDesc' -EA 0).DriverDesc
@@ -1165,7 +1176,7 @@ $Cat_Nvidia = [ordered]@{
         }
     }
     "NVIDIA Profile" = {
-        Write-Host "    [Low latency profile]" -f Cyan
+        Write-Host "    [Low latency profile]" -f White
         Get-NvidiaGPU | ForEach-Object {
             $p = $_.PSPath
             $desc = (Get-ItemProperty $p -Name 'DriverDesc' -EA 0).DriverDesc
@@ -1178,13 +1189,13 @@ $Cat_Nvidia = [ordered]@{
             GpuProp $p 'RmEnableExtSs' 1
             GpuProp $p 'RMForceGenSpeed' 0
         }
-        Write-Host "    [NVTweak PState lock]" -f Cyan
+        Write-Host "    [NVTweak PState lock]" -f White
         $nvG = "HKLM:\SOFTWARE\NVIDIA Corporation\Global\NVTweak"
         if (-not (Test-Path $nvG)) { New-Item -Path $nvG -Force -EA 0 | Out-Null }
         Set-ItemProperty -Path $nvG -Name 'DisablePState' -Value 1 -Type DWord -Force -EA 0
         Set-ItemProperty -Path $nvG -Name 'DisableDynamicPstate' -Value 1 -Type DWord -Force -EA 0
-        Write-Host "      +-- DisablePState = 1" -f Yellow
-        Write-Host "      +-- DisableDynamicPstate = 1" -f Yellow
+        Write-Host "      +-- DisablePState = 1" -f Gray
+        Write-Host "      +-- DisableDynamicPstate = 1" -f Gray
     }
 }
 
@@ -1209,19 +1220,19 @@ function Run-TweakCategory {
         Write-Host "  |" -f DarkGray
         $sw = [System.Diagnostics.Stopwatch]::StartNew()
         try { & $Tweaks[$key] } catch {
-            Write-Host "      [ERR] $($_.Exception.Message)" -f Magenta
+            Write-Host "      [ERR] $($_.Exception.Message)" -f White
             $errors += $key
         }
         $sw.Stop()
-        Write-Host "  +-- [OK] $([math]::Round($sw.Elapsed.TotalSeconds,1))s" -f Green
+        Write-Host "  +-- [OK] $([math]::Round($sw.Elapsed.TotalSeconds,1))s" -f Gray
     }
     Write-Host ""
     Write-Host "  =============================================" -f DarkGray
     if ($errors.Count -gt 0) {
-        Write-Host "  Category done: $($errors.Count) error(s)" -f Magenta
-        foreach ($e in $errors) { Write-Host "    ! $e" -f Magenta }
+        Write-Host "  Category done: $($errors.Count) error(s)" -f White
+        foreach ($e in $errors) { Write-Host "    ! $e" -f White }
     } else {
-        Write-Host "  Category done: all $total tweaks OK" -f Green
+        Write-Host "  Category done: all $total tweaks OK" -f Gray
     }
     Write-Host "  =============================================" -f DarkGray
     Write-Host ""
@@ -1241,23 +1252,23 @@ function Run-AllTweaks {
         Write-Host "  |" -f DarkGray
         $sw = [System.Diagnostics.Stopwatch]::StartNew()
         try { & $AllTweaks[$key] } catch {
-            Write-Host "      [ERR] $($_.Exception.Message)" -f Magenta
+            Write-Host "      [ERR] $($_.Exception.Message)" -f White
             $errors += $key
         }
         $sw.Stop()
-        Write-Host "  +-- [OK] $([math]::Round($sw.Elapsed.TotalSeconds,1))s" -f Green
+        Write-Host "  +-- [OK] $([math]::Round($sw.Elapsed.TotalSeconds,1))s" -f Gray
     }
     $swTotal.Stop()
     Write-Host ""
     Write-Host "  =============================================" -f DarkGray
     if ($errors.Count -gt 0) {
-        Write-Host "  ALL DONE: $($errors.Count) error(s) " -f Magenta -NoNewline
+        Write-Host "  ALL DONE: $($errors.Count) error(s) " -f White -NoNewline
     } else {
-        Write-Host "  ALL DONE: all $total tweaks OK " -f Green -NoNewline
+        Write-Host "  ALL DONE: all $total tweaks OK " -f Gray -NoNewline
     }
     Write-Host "[$([math]::Round($swTotal.Elapsed.TotalSeconds,1))s total]" -f DarkGray
     Write-Host "  =============================================" -f DarkGray
-    if ($errors.Count -gt 0) { foreach ($e in $errors) { Write-Host "    ! $e" -f Magenta } }
+    if ($errors.Count -gt 0) { foreach ($e in $errors) { Write-Host "    ! $e" -f White } }
     Write-Host ""
     try { [Console]::Beep(1200, 300) } catch {}
     Show-RestartPopup "All $total tweaks applied successfully!`n`nPlease RESTART your computer for all changes to take full effect."
@@ -1289,7 +1300,7 @@ while ($true) {
         $labelPad = $maxLabelLen - $item.L.Length + 2
         $countStr = "($($item.C) tweaks)"
         Write-Host (" " * $pad) -NoNewline
-        Write-Host "[$($item.K)]" -f Cyan -NoNewline
+        Write-Host "[$($item.K)]" -f Gray -NoNewline
         Write-Host " " -NoNewline
         Write-Host $item.L -f White -NoNewline
         Write-Host (" " * $labelPad) -NoNewline
@@ -1300,23 +1311,23 @@ while ($true) {
     $aLabelPad = $maxLabelLen - "Apply All".Length + 2
     $aCountStr = "($($AllTweaks.Count) tweaks)"
     Write-Host (" " * $aPad) -NoNewline
-    Write-Host "[A]" -f Green -NoNewline
+    Write-Host "[A]" -f White -NoNewline
     Write-Host " " -NoNewline
-    Write-Host "Apply All" -f Yellow -NoNewline
+    Write-Host "Apply All" -f Gray -NoNewline
     Write-Host (" " * $aLabelPad) -NoNewline
-    Write-Host $aCountStr -f DarkYellow
+    Write-Host $aCountStr -f DarkGray
     $xPad = [math]::Max(0, [math]::Floor(($W - $menuBlockW) / 2))
     $xLabelPad = $maxLabelLen - "Exit".Length + 2
     Write-Host (" " * $xPad) -NoNewline
-    Write-Host "[X]" -f Magenta -NoNewline
+    Write-Host "[X]" -f DarkGray -NoNewline
     Write-Host " " -NoNewline
-    Write-Host "Exit" -f Red
+    Write-Host "Exit" -f DarkGray
     Write-Host ""
     Write-Center "-----------------------------------------------------" DarkGray
     Write-Host ""
     $promptPad = [math]::Max(0, [math]::Floor(($W - 20) / 2))
     Write-Host (" " * $promptPad) -NoNewline
-    Write-Host "Choose an option: " -f Cyan -NoNewline
+    Write-Host "Choose an option: " -f Gray -NoNewline
     $choice = (Read-Host).Trim().ToUpper()
     switch ($choice) {
         "1" { Run-TweakCategory -CategoryName "Windows Settings" -Tweaks $Cat_Windows }
@@ -1327,7 +1338,8 @@ while ($true) {
         "6" { Run-TweakCategory -CategoryName "Network & NIC" -Tweaks $Cat_Network }
         "7" { Run-TweakCategory -CategoryName "NVIDIA GPU" -Tweaks $Cat_Nvidia }
         "A" { Run-AllTweaks -AllTweaks $AllTweaks }
-        "X" { Write-Host ""; Write-Host "  Exiting..." -f Cyan; Start-Sleep -Milliseconds 500; exit }
-        default { Write-Host "  Invalid choice." -f Magenta; Start-Sleep -Milliseconds 800 }
+        "X" { Write-Host ""; Write-Host "  Exiting..." -f Gray; Start-Sleep -Milliseconds 500; exit }
+        default { Write-Host "  Invalid choice." -f White; Start-Sleep -Milliseconds 800 }
     }
 }
+```
