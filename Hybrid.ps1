@@ -6,7 +6,7 @@ $ErrorActionPreference = 'Continue'
 
 $isAdmin = ([Security.Principal.WindowsPrincipal]([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) {
-    Write-Host ""; Write-Host "  ERROR: Must run as Administrator!" -f Red
+    Write-Host ""; Write-Host "  ERROR: Must run as Administrator!" -f Magenta
     Write-Host "  Right-click Hybrid.bat > Run as administrator" -f Yellow
     Write-Host ""; Read-Host "  Press Enter to exit"; exit
 }
@@ -89,7 +89,7 @@ function Write-Header {
     Clear-Host
     $sys=Get-SystemInfo; $W=$Host.UI.RawUI.WindowSize.Width
     Write-Host ""
-    Write-CenterMulti @(@{Text="Administrator:";Color="DarkCyan"},@{Text=" HYBRID";Color="White"})
+    Write-CenterMulti @(@{Text="Administrator:";Color="Cyan"},@{Text=" HYBRID";Color="White"})
     Write-Host ""
    $art = @(
     "▄▄▄   ▄▄▄ ▄▄▄   ▄▄▄ ▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄   ▄▄▄▄▄ ▄▄▄▄▄▄ "
@@ -98,21 +98,21 @@ function Write-Header {
     "███▀▀▀███   ▀███▀   ███  ███▄ ███▀▀██▄   ███  ███  ███"
     "███   ███    ███    ████████▀ ███  ▀███ ▄███▄ ██████▀ "
 )
-$artClr = @("Blue", "DarkCyan", "Cyan", "DarkCyan", "Blue")
+$artClr = @("DarkMagenta", "Magenta", "Yellow", "Magenta", "DarkMagenta")
 for ($i = 0; $i -lt $art.Length; $i++) { Write-Center $art[$i] $artClr[$i] }
-    Write-Host ""; Write-Center "-----------------------------------------------------" DarkBlue; Write-Host ""
+    Write-Host ""; Write-Center "-----------------------------------------------------" DarkGray; Write-Host ""
     $bw=50; $boxPad=[math]::Max(0,[math]::Floor(($W-$bw-2)/2)); $bp=" "*$boxPad
-    Write-Host "${bp}+" -f DarkCyan -NoNewline; Write-Host ("-"*$bw) -f DarkBlue -NoNewline; Write-Host "+" -f DarkCyan
+    Write-Host "${bp}+" -f Cyan -NoNewline; Write-Host ("-"*$bw) -f DarkGray -NoNewline; Write-Host "+" -f Cyan
     foreach($line in @(@{L="CPU";V=$sys.CPU},@{L="RAM";V=$sys.RAM},@{L="GPU";V=$sys.GPU},@{L="OS ";V=$sys.OS})){
         $inner=" $($line.L) : $($line.V)"
         if($inner.Length-gt $bw){$inner=$inner.Substring(0,$bw-1)+"~"}
         $padLen=[math]::Max(0,$bw-$inner.Length)
-        Write-Host "${bp}|" -f DarkCyan -NoNewline
-        Write-Host " $($line.L)" -f DarkCyan -NoNewline; Write-Host " : " -f DarkBlue -NoNewline
-        Write-Host $line.V -f White -NoNewline; Write-Host (" "*$padLen) -NoNewline; Write-Host "|" -f DarkCyan
+        Write-Host "${bp}|" -f Cyan -NoNewline
+        Write-Host " $($line.L)" -f Cyan -NoNewline; Write-Host " : " -f DarkGray -NoNewline
+        Write-Host $line.V -f White -NoNewline; Write-Host (" "*$padLen) -NoNewline; Write-Host "|" -f Cyan
     }
-    Write-Host "${bp}+" -f DarkCyan -NoNewline; Write-Host ("-"*$bw) -f DarkBlue -NoNewline; Write-Host "+" -f DarkCyan
-    Write-Host ""; Write-Center "-----------------------------------------------------" DarkBlue; Write-Host ""
+    Write-Host "${bp}+" -f Cyan -NoNewline; Write-Host ("-"*$bw) -f DarkGray -NoNewline; Write-Host "+" -f Cyan
+    Write-Host ""; Write-Center "-----------------------------------------------------" DarkGray; Write-Host ""
 }
 
 # ============================================================
@@ -130,7 +130,7 @@ function reg {
         }elseif($v-eq'delete'){
             $vi=[array]::IndexOf($a,'/v')
             $vn=if($vi-ge 0-and($vi+1)-lt $a.Count){$a[$vi+1]}else{''}
-            Write-Host "      +-- DEL: $vn" -f DarkRed
+            Write-Host "      +-- DEL: $vn" -f Magenta
         }
     } catch {}
     & reg.exe @a 2>$null | Out-Null
@@ -141,7 +141,7 @@ function bcdedit {
         if($a.Count-ge 2){
             $vb=$a[0]; $nm=$a[1]
             $vl=if($a.Count-ge 3){" = $($a[2])"}else{""}
-            Write-Host "      +-- bcdedit $vb $nm$vl" -f Gray
+            Write-Host "      +-- bcdedit $vb $nm$vl" -f DarkGray
         }
     } catch {}
     & bcdedit.exe @a 2>$null | Out-Null
@@ -151,7 +151,7 @@ function powercfg {
     try {
         $d=($a -join ' ')
         if($d.Length-gt 65){$d=$d.Substring(0,62)+"..."}
-        Write-Host "      +-- powercfg $d" -f Gray
+        Write-Host "      +-- powercfg $d" -f DarkGray
     } catch {}
     & powercfg.exe @a 2>$null | Out-Null
 }
@@ -160,13 +160,13 @@ function netsh {
     try {
         $d=($a -join ' ')
         if($d.Length-gt 65){$d=$d.Substring(0,62)+"..."}
-        Write-Host "      +-- netsh $d" -f Gray
+        Write-Host "      +-- netsh $d" -f DarkGray
     } catch {}
     & netsh.exe @a 2>$null | Out-Null
 }
 function Disable-OServices([string[]]$N) {
     foreach($s in $N){
-        Write-Host "      +-- [X] $s" -f DarkRed
+        Write-Host "      +-- [X] $s" -f Magenta
         sc.exe stop $s 2>$null | Out-Null
         sc.exe config $s start= disabled 2>$null | Out-Null
     }
@@ -321,7 +321,7 @@ $Cat_Windows = [ordered]@{
         Write-Host "    [News/Widgets OFF]" -f Cyan
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Dsh" /v AllowNewsAndInterests /t REG_DWORD /d 0 /f
         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v TaskbarDa /t REG_DWORD /d 0 /f
-        Write-Host "      +-- Kill Widgets" -f DarkRed
+        Write-Host "      +-- Kill Widgets" -f Magenta
         Stop-Process -Name "Widgets" -Force -EA 0
         Stop-Process -Name "WidgetService" -Force -EA 0
     }
@@ -340,7 +340,7 @@ $Cat_Windows = [ordered]@{
         Write-Host "    [Edge prelaunch OFF]" -f Cyan
         reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" /v AllowPrelaunch /t REG_DWORD /d 0 /f
         reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\TabPreloader" /v AllowTabPreloading /t REG_DWORD /d 0 /f
-        Write-Host "      +-- Kill msedge" -f DarkRed
+        Write-Host "      +-- Kill msedge" -f Magenta
         Stop-Process -Name "msedge" -Force -EA 0
     }
     "Windows Ads and Tips" = {
@@ -374,7 +374,7 @@ $Cat_Windows = [ordered]@{
         $apps = @('Microsoft.Windows.Photos_8wekyb3d8bbwe','Microsoft.ZuneVideo_8wekyb3d8bbwe','Microsoft.BingNews_8wekyb3d8bbwe','Microsoft.BingWeather_8wekyb3d8bbwe','Microsoft.GetHelp_8wekyb3d8bbwe','Microsoft.Getstarted_8wekyb3d8bbwe','Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe','Microsoft.People_8wekyb3d8bbwe','Microsoft.SkypeApp_kzf8qxf38zg5c','Microsoft.MicrosoftSolitaireCollection_8wekyb3d8bbwe','Microsoft.WindowsFeedbackHub_8wekyb3d8bbwe','Microsoft.Xbox.TCUI_8wekyb3d8bbwe','Microsoft.XboxApp_8wekyb3d8bbwe','Microsoft.XboxGameOverlay_8wekyb3d8bbwe','Microsoft.XboxGamingOverlay_8wekyb3d8bbwe','Microsoft.XboxIdentityProvider_8wekyb3d8bbwe','Microsoft.YourPhone_8wekyb3d8bbwe','Microsoft.WindowsMaps_8wekyb3d8bbwe','Microsoft.Messaging_8wekyb3d8bbwe','Microsoft.WindowsSoundRecorder_8wekyb3d8bbwe')
         foreach ($app in $apps) {
             $short = $app -replace '_[a-z0-9]+$',''
-            Write-Host "      +-- $short" -f DarkRed
+            Write-Host "      +-- $short" -f Magenta
             $p = "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications\$app"
             reg add "$p" /v Disabled /t REG_DWORD /d 1 /f
             reg add "$p" /v DisabledByUser /t REG_DWORD /d 1 /f
@@ -412,7 +412,7 @@ $Cat_Debloat = [ordered]@{
         Disable-OServices @('DiagTrack','MapsBroker','XblAuthManager','XblGameSave','XboxNetApiSvc','XboxGipSvc','Fax','RetailDemo','RemoteRegistry','WerSvc')
         Write-Host "    [Ensure critical services running]" -f Cyan
         foreach($s in @('Audiosrv','AudioEndpointBuilder','Dhcp','NlaSvc','Netman','WlanSvc','RpcSs','EventLog','PlugPlay','LanmanWorkstation','LanmanServer','WSearch')){
-            Write-Host "      +-- [OK] $s" -f DarkGreen
+            Write-Host "      +-- [OK] $s" -f Green
             sc.exe config $s start= auto 2>$null | Out-Null
             sc.exe start $s 2>$null | Out-Null
         }
@@ -485,7 +485,7 @@ $Cat_Debloat = [ordered]@{
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" /v EnableMulticast /t REG_DWORD /d 0 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v DisableBandwidthThrottling /t REG_DWORD /d 1 /f
         reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" /v DisableLargeMtu /t REG_DWORD /d 0 /f
-        Write-Host "      +-- Set-SmbServerConfiguration SMB1 = off" -f Gray
+        Write-Host "      +-- Set-SmbServerConfiguration SMB1 = off" -f DarkGray
         Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force -EA 0
         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Psched" /v NonBestEffortLimit /t REG_DWORD /d 0 /f
         Write-Host "    [Disable P2P discovery]" -f Cyan
@@ -516,7 +516,7 @@ $Cat_Debloat = [ordered]@{
     "System Restore Off" = {
         Write-Host "    [System Restore OFF]" -f Cyan
         Disable-ComputerRestore -Drive "C:\" -EA 0
-        Write-Host "      +-- Delete all shadows" -f DarkRed
+        Write-Host "      +-- Delete all shadows" -f Magenta
         $vp = Start-Process vssadmin -ArgumentList "delete shadows /all /quiet" -NoNewWindow -PassThru -EA 0
         if ($vp -and -not $vp.WaitForExit(10000)) { try { $vp.Kill() } catch {} }
         if ($vp) { $vp.Dispose() }
@@ -648,11 +648,11 @@ $Cat_CPU = [ordered]@{
         $pp = "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters"
         $hasHDD = Get-PhysicalDisk | Where-Object { $_.MediaType -eq 'HDD' }
         if ($hasHDD) {
-            Write-Host "      +-- HDD detected: Prefetcher=3, Superfetch=0" -f Gray
+            Write-Host "      +-- HDD detected: Prefetcher=3, Superfetch=0" -f DarkGray
             reg add "$pp" /v EnablePrefetcher /t REG_DWORD /d 3 /f
             reg add "$pp" /v EnableSuperfetch /t REG_DWORD /d 0 /f
         } else {
-            Write-Host "      +-- SSD only: Prefetcher=0, Superfetch=0" -f Gray
+            Write-Host "      +-- SSD only: Prefetcher=0, Superfetch=0" -f DarkGray
             reg add "$pp" /v EnablePrefetcher /t REG_DWORD /d 0 /f
             reg add "$pp" /v EnableSuperfetch /t REG_DWORD /d 0 /f
         }
@@ -683,7 +683,7 @@ $Cat_Misc = [ordered]@{
         Write-Host "    [Hibernate OFF]" -f Cyan
         powercfg -h off
         Write-Host "    [OneDrive kill]" -f Cyan
-        Write-Host "      +-- Kill OneDrive.exe" -f DarkRed
+        Write-Host "      +-- Kill OneDrive.exe" -f Magenta
         taskkill /f /im OneDrive.exe 2>$null | Out-Null
         reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v OneDrive /f 2>$null | Out-Null
     }
@@ -694,7 +694,7 @@ $Cat_Misc = [ordered]@{
     "LargeSystemCache + IoPageLockLimit" = {
         Write-Host "    [RAM-aware cache settings]" -f Cyan
         $ramGB = [math]::Round((Get-CimInstance Win32_ComputerSystem -EA 0).TotalPhysicalMemory / 1GB)
-        Write-Host "      +-- RAM = ${ramGB}GB" -f Gray
+        Write-Host "      +-- RAM = ${ramGB}GB" -f DarkGray
         $lsc = if ($ramGB -ge 16) { 1 } else { 0 }
         $mmReg = "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management"
         reg add "$mmReg" /v LargeSystemCache /t REG_DWORD /d $lsc /f
@@ -729,7 +729,7 @@ $Cat_Misc = [ordered]@{
         }
         Write-Host "    [Non-C: indexing OFF]" -f Cyan
         Get-Volume | Where-Object { $_.DriveType -eq 'Fixed' -and $_.DriveLetter -and $_.DriveLetter -ne 'C' } | ForEach-Object {
-            Write-Host "      +-- $($_.DriveLetter): indexing OFF" -f Gray
+            Write-Host "      +-- $($_.DriveLetter): indexing OFF" -f DarkGray
             $vObj = Get-CimInstance -ClassName Win32_Volume -Filter "DriveLetter='$($_.DriveLetter):'" -EA 0
             if ($vObj) {
                 $vObj.IndexingEnabled = $false
@@ -743,7 +743,7 @@ $Cat_Misc = [ordered]@{
         fsutil behavior set disabledeletenotify 0 2>$null | Out-Null
         Write-Host "    [ReTrim all volumes]" -f Cyan
         Get-Volume | Where-Object { $_.DriveType -eq 'Fixed' -and $_.DriveLetter } | ForEach-Object {
-            Write-Host "      +-- $($_.DriveLetter): ReTrim" -f Gray
+            Write-Host "      +-- $($_.DriveLetter): ReTrim" -f DarkGray
             Optimize-Volume -DriveLetter $_.DriveLetter -ReTrim -EA 0
         }
     }
@@ -861,7 +861,7 @@ $Cat_Misc = [ordered]@{
     "Device Power" = {
         Write-Host "    [USB hub idle OFF]" -f Cyan
         Get-CimInstance -ClassName Win32_USBHub -EA 0 | ForEach-Object {
-            Write-Host "      +-- $($_.Name)" -f Gray
+            Write-Host "      +-- $($_.Name)" -f DarkGray
             $r = "HKLM:\SYSTEM\CurrentControlSet\Enum\$($_.PNPDeviceID)\Device Parameters\WDF"
             if (Test-Path $r) { Set-ItemProperty -Path $r -Name 'IdleInWorkingState' -Value 0 -Type DWord -Force -EA 0 }
         }
@@ -871,13 +871,13 @@ $Cat_Misc = [ordered]@{
     "USB Power Deep" = {
         Write-Host "    [USB hub/controller idle OFF]" -f Cyan
         Get-CimInstance -ClassName Win32_USBHub -EA 0 | ForEach-Object {
-            Write-Host "      +-- $($_.Name)" -f Gray
+            Write-Host "      +-- $($_.Name)" -f DarkGray
             $r = "HKLM:\SYSTEM\CurrentControlSet\Enum\$($_.PNPDeviceID)\Device Parameters"
             if (Test-Path "$r\WDF") { Set-ItemProperty -Path "$r\WDF" -Name 'IdleInWorkingState' -Value 0 -Type DWord -Force -EA 0 }
             if (Test-Path "$r\USB") { Set-ItemProperty -Path "$r\USB" -Name 'DeviceIdleEnabled' -Value 0 -Type DWord -Force -EA 0 }
         }
         Get-CimInstance -ClassName Win32_USBController -EA 0 | ForEach-Object {
-            Write-Host "      +-- $($_.Name)" -f Gray
+            Write-Host "      +-- $($_.Name)" -f DarkGray
             $r = "HKLM:\SYSTEM\CurrentControlSet\Enum\$($_.PNPDeviceID)\Device Parameters\WDF"
             if (Test-Path $r) { Set-ItemProperty -Path $r -Name 'IdleInWorkingState' -Value 0 -Type DWord -Force -EA 0 }
         }
@@ -908,7 +908,7 @@ $Cat_Clean = [ordered]@{
         $logCount = 0
         foreach ($ln in $logNames) {
             $logCount++
-            if ($logCount % 20 -eq 0) { Write-Host "      +-- clearing log $logCount/$($logNames.Count)..." -f Gray }
+            if ($logCount % 20 -eq 0) { Write-Host "      +-- clearing log $logCount/$($logNames.Count)..." -f DarkGray }
             $p = Start-Process wevtutil.exe -ArgumentList "cl `"$ln`"" -NoNewWindow -PassThru -EA 0
             if ($p -and -not $p.WaitForExit(3000)) { try { $p.Kill() } catch {} }
             if ($p) { $p.Dispose() }
@@ -960,7 +960,7 @@ $Cat_Network = [ordered]@{
         }
         Write-Host "    [NIC: LSO OFF, InterruptModeration OFF]" -f Cyan
         Get-PhysNIC | ForEach-Object {
-            Write-Host "      +-- $($_.Name)" -f Gray
+            Write-Host "      +-- $($_.Name)" -f DarkGray
             Disable-NetAdapterLso -Name $_.Name -EA 0
             Set-NetAdapterAdvancedProperty -Name $_.Name -RegistryKeyword '*InterruptModeration' -RegistryValue 0 -EA 0
         }
@@ -992,9 +992,9 @@ $Cat_Network = [ordered]@{
             NicDisp $n 'Receive Buffers' '2048'
             NicDisp $n 'Transmit Buffers' '2048'
             NicProp $n '*InterruptModeration' 0
-            Write-Host "      |  +-- RSC OFF" -f Gray
+            Write-Host "      |  +-- RSC OFF" -f DarkGray
             Disable-NetAdapterRsc -Name $n -EA 0
-            Write-Host "      |  +-- WakeOnMagicPacket/Pattern OFF" -f Gray
+            Write-Host "      |  +-- WakeOnMagicPacket/Pattern OFF" -f DarkGray
             Set-NetAdapterPowerManagement -Name $n -WakeOnMagicPacket Disabled -WakeOnPattern Disabled -EA 0
         }
     }
@@ -1007,7 +1007,7 @@ $Cat_Network = [ordered]@{
             NicProp $n '*RssBaseProcNumber' 2
             $cores = (Get-CimInstance Win32_Processor -EA 0).NumberOfLogicalProcessors
             NicProp $n '*MaxRssProcessors' $cores
-            Write-Host "      |  +-- IPv6 binding OFF" -f Gray
+            Write-Host "      |  +-- IPv6 binding OFF" -f DarkGray
             Disable-NetAdapterBinding -Name $n -ComponentID ms_tcpip6 -EA 0
         }
     }
@@ -1032,7 +1032,7 @@ $Cat_Network = [ordered]@{
         Get-PhysNIC | ForEach-Object {
             $n = $_.Name
             Write-Host "      +-- [$n]" -f White
-            Write-Host "      |  +-- LSO OFF (IPv4+IPv6)" -f Gray
+            Write-Host "      |  +-- LSO OFF (IPv4+IPv6)" -f DarkGray
             Disable-NetAdapterLso -Name $n -IPv4 -IPv6 -EA 0
             $mr = (Get-NetAdapterAdvancedProperty -Name $n -RegistryKeyword '*NumRssQueues' -EA 0).RegistryValue
             if ($mr) { NicProp $n '*NumRssQueues' $mr }
@@ -1209,21 +1209,21 @@ function Run-TweakCategory {
         Write-Host "  |" -f DarkGray
         $sw = [System.Diagnostics.Stopwatch]::StartNew()
         try { & $Tweaks[$key] } catch {
-            Write-Host "      [ERR] $($_.Exception.Message)" -f Red
+            Write-Host "      [ERR] $($_.Exception.Message)" -f Magenta
             $errors += $key
         }
         $sw.Stop()
         Write-Host "  +-- [OK] $([math]::Round($sw.Elapsed.TotalSeconds,1))s" -f Green
     }
     Write-Host ""
-    Write-Host "  =============================================" -f DarkBlue
+    Write-Host "  =============================================" -f DarkGray
     if ($errors.Count -gt 0) {
-        Write-Host "  Category done: $($errors.Count) error(s)" -f DarkRed
-        foreach ($e in $errors) { Write-Host "    ! $e" -f DarkRed }
+        Write-Host "  Category done: $($errors.Count) error(s)" -f Magenta
+        foreach ($e in $errors) { Write-Host "    ! $e" -f Magenta }
     } else {
         Write-Host "  Category done: all $total tweaks OK" -f Green
     }
-    Write-Host "  =============================================" -f DarkBlue
+    Write-Host "  =============================================" -f DarkGray
     Write-Host ""
     try { [Console]::Beep(1200, 300) } catch {}
     Show-RestartPopup "Category [$CategoryName] applied successfully!`n`nPlease RESTART your computer for all changes to take full effect."
@@ -1241,7 +1241,7 @@ function Run-AllTweaks {
         Write-Host "  |" -f DarkGray
         $sw = [System.Diagnostics.Stopwatch]::StartNew()
         try { & $AllTweaks[$key] } catch {
-            Write-Host "      [ERR] $($_.Exception.Message)" -f Red
+            Write-Host "      [ERR] $($_.Exception.Message)" -f Magenta
             $errors += $key
         }
         $sw.Stop()
@@ -1249,15 +1249,15 @@ function Run-AllTweaks {
     }
     $swTotal.Stop()
     Write-Host ""
-    Write-Host "  =============================================" -f DarkBlue
+    Write-Host "  =============================================" -f DarkGray
     if ($errors.Count -gt 0) {
-        Write-Host "  ALL DONE: $($errors.Count) error(s) " -f DarkRed -NoNewline
+        Write-Host "  ALL DONE: $($errors.Count) error(s) " -f Magenta -NoNewline
     } else {
         Write-Host "  ALL DONE: all $total tweaks OK " -f Green -NoNewline
     }
     Write-Host "[$([math]::Round($swTotal.Elapsed.TotalSeconds,1))s total]" -f DarkGray
-    Write-Host "  =============================================" -f DarkBlue
-    if ($errors.Count -gt 0) { foreach ($e in $errors) { Write-Host "    ! $e" -f DarkRed } }
+    Write-Host "  =============================================" -f DarkGray
+    if ($errors.Count -gt 0) { foreach ($e in $errors) { Write-Host "    ! $e" -f Magenta } }
     Write-Host ""
     try { [Console]::Beep(1200, 300) } catch {}
     Show-RestartPopup "All $total tweaks applied successfully!`n`nPlease RESTART your computer for all changes to take full effect."
@@ -1289,7 +1289,7 @@ while ($true) {
         $labelPad = $maxLabelLen - $item.L.Length + 2
         $countStr = "($($item.C) tweaks)"
         Write-Host (" " * $pad) -NoNewline
-        Write-Host "[$($item.K)]" -f DarkCyan -NoNewline
+        Write-Host "[$($item.K)]" -f Cyan -NoNewline
         Write-Host " " -NoNewline
         Write-Host $item.L -f White -NoNewline
         Write-Host (" " * $labelPad) -NoNewline
@@ -1300,7 +1300,7 @@ while ($true) {
     $aLabelPad = $maxLabelLen - "Apply All".Length + 2
     $aCountStr = "($($AllTweaks.Count) tweaks)"
     Write-Host (" " * $aPad) -NoNewline
-    Write-Host "[A]" -f DarkBlue -NoNewline
+    Write-Host "[A]" -f Green -NoNewline
     Write-Host " " -NoNewline
     Write-Host "Apply All" -f Yellow -NoNewline
     Write-Host (" " * $aLabelPad) -NoNewline
@@ -1308,15 +1308,15 @@ while ($true) {
     $xPad = [math]::Max(0, [math]::Floor(($W - $menuBlockW) / 2))
     $xLabelPad = $maxLabelLen - "Exit".Length + 2
     Write-Host (" " * $xPad) -NoNewline
-    Write-Host "[X]" -f DarkBlue -NoNewline
+    Write-Host "[X]" -f Magenta -NoNewline
     Write-Host " " -NoNewline
-    Write-Host "Exit" -f DarkRed
+    Write-Host "Exit" -f Red
     Write-Host ""
-    Write-Center "-----------------------------------------------------" DarkBlue
+    Write-Center "-----------------------------------------------------" DarkGray
     Write-Host ""
     $promptPad = [math]::Max(0, [math]::Floor(($W - 20) / 2))
     Write-Host (" " * $promptPad) -NoNewline
-    Write-Host "Choose an option: " -f DarkCyan -NoNewline
+    Write-Host "Choose an option: " -f Cyan -NoNewline
     $choice = (Read-Host).Trim().ToUpper()
     switch ($choice) {
         "1" { Run-TweakCategory -CategoryName "Windows Settings" -Tweaks $Cat_Windows }
@@ -1327,7 +1327,7 @@ while ($true) {
         "6" { Run-TweakCategory -CategoryName "Network & NIC" -Tweaks $Cat_Network }
         "7" { Run-TweakCategory -CategoryName "NVIDIA GPU" -Tweaks $Cat_Nvidia }
         "A" { Run-AllTweaks -AllTweaks $AllTweaks }
-        "X" { Write-Host ""; Write-Host "  Exiting..." -f DarkCyan; Start-Sleep -Milliseconds 500; exit }
-        default { Write-Host "  Invalid choice." -f DarkRed; Start-Sleep -Milliseconds 800 }
+        "X" { Write-Host ""; Write-Host "  Exiting..." -f Cyan; Start-Sleep -Milliseconds 500; exit }
+        default { Write-Host "  Invalid choice." -f Magenta; Start-Sleep -Milliseconds 800 }
     }
 }
